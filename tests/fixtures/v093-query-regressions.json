@@ -1,0 +1,672 @@
+[
+  {
+    "before_query": "Comfort Hotel Osaka Shinsaibashi 2027-04-20 2027-04-27 2 adults 1 room double total availability official address access check in check out room breakfast",
+    "before_task_id": "59d600dc6cc5ed27fb39",
+    "before_raw_request": "work/v092-requests-1.json",
+    "after_query": "Comfort Hotel Osaka Shinsaibashi Osaka Japan double room availability stay total 2027-04-20 2027-04-27 2 adults 1 room official",
+    "after_task_id": "c84285fd44a6999c68b3",
+    "after_intent": {
+      "entity_type": "HOTEL",
+      "entity_name": "Comfort Hotel Osaka Shinsaibashi",
+      "location": "Osaka Japan",
+      "information_need": "EXACT_HOTEL_QUOTE",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "double room availability stay total",
+      "keywords": "double room availability stay total",
+      "origin": null,
+      "destination": null,
+      "date_scope": "EXACT_DATE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": 1
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "酒店库存查询混入地址、退房、早餐；拆为日期和双人房总价意图",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-002.json"
+  },
+  {
+    "before_query": "上海浦东国际机场 PVG → 关西国际机场 KIX（航司/航站楼待核） walking route access station exit travel time operator",
+    "before_task_id": "a60ea0c184a82cea39a5",
+    "before_raw_request": "work/v092-requests-1.json",
+    "after_query": "Shanghai Osaka Japan airline flight duration official",
+    "after_task_id": "ed9b586b0e8dffa14a41",
+    "after_intent": {
+      "entity_type": "ROUTE",
+      "entity_name": "Shanghai Osaka",
+      "location": "Japan",
+      "information_need": "FLIGHT_DURATION",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "airline flight duration",
+      "keywords": "airline flight duration",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": false
+      },
+      "reasons": [
+        "entity_resolved",
+        "keywords_relevant",
+        "no_placeholder_leakage"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "航班移动误用步行和站口词；改查航空公司飞行时长",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-002.json"
+  },
+  {
+    "before_query": "中之岛公园水岸 official opening hours admission ticket reservation nearest station access",
+    "before_task_id": "a3db0b3f1168ed515d07",
+    "before_raw_request": "work/v092-requests-1.json",
+    "after_query": "中之岛公园 Osaka Japan opening hours official",
+    "after_task_id": "90e474af1a16e03d1c4d",
+    "after_intent": {
+      "entity_type": "ATTRACTION",
+      "entity_name": "中之岛公园",
+      "location": "Osaka Japan",
+      "information_need": "OPENING_HOURS",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "opening hours",
+      "keywords": "opening hours",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "营业时间混入门票、预约与交通；只查中之岛公园营业",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-022.json"
+  },
+  {
+    "before_query": "attractions official current price cost reference",
+    "before_task_id": "7752224b7481a1b44aef",
+    "before_raw_request": "work/v092-requests-1.json",
+    "after_query": "黒門市場 Osaka Japan admission ticket price official",
+    "after_task_id": "ef304eb94c2421368d96",
+    "after_intent": {
+      "entity_type": "COST",
+      "entity_name": "黒門市場",
+      "location": "Osaka Japan",
+      "information_need": "ADMISSION_PRICE",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "admission ticket price",
+      "keywords": "admission ticket price",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "entity_resolved",
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "泛化 attractions 无实体；收窄为黑门市场入场费用",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-001.json"
+  },
+  {
+    "before_query": "伏见稻荷附近午餐（店铺待核） official restaurant shop address hours menu reservation nearby alternative 大阪 → 伏见稻荷（当日往返）",
+    "before_task_id": "57c5435da9304fef3fcb",
+    "before_raw_request": "work/v092-requests-2.json",
+    "after_query": "Fushimi Inari Kyoto Japan restaurant menu prices address official",
+    "after_task_id": "7b6a22a3f96e3ac5848d",
+    "after_intent": {
+      "entity_type": "RESTAURANT",
+      "entity_name": "Fushimi Inari Kyoto Japan",
+      "location": "Kyoto Japan",
+      "information_need": "RESTAURANT_DISCOVERY",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "restaurant menu prices address",
+      "keywords": "restaurant menu prices address",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": false
+      },
+      "reasons": [
+        "entity_resolved",
+        "no_placeholder_leakage"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "未核门店且大阪/京都混杂；改为伏见稻荷区域餐厅发现",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-001.json"
+  },
+  {
+    "before_query": "大阪为基地，京都一日往返 公式 営業時間 料金 予約 アクセス 徒歩 出入口 ",
+    "before_task_id": "a1aff5ed9a748a534fa2",
+    "before_raw_request": "work/v092-requests-2.json",
+    "after_query": "Japan 外務省 短期滞在 査証 公式",
+    "after_task_id": "9327a2f0f4b22c0fd8f4",
+    "after_intent": {
+      "entity_type": "ENTRY",
+      "entity_name": "Japan",
+      "location": "Japan",
+      "information_need": "ENTRY_RULE",
+      "travel_date": "2027-04-20",
+      "preferred_language": "ja",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "visitor visa entry",
+      "keywords": "外務省 短期滞在 査証",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "entity_resolved",
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "入境意图误用营业、步行等词；查日本短期滞在签证",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-020.json"
+  },
+  {
+    "before_query": "JPY CNY 公式 営業時間 料金 予約 アクセス 徒歩 出入口 ",
+    "before_task_id": "e53402c0c95d08fe674f",
+    "before_raw_request": "work/v092-requests-2.json",
+    "after_query": "JPY CNY currency market 現在 為替 レート 公式",
+    "after_task_id": "2df7c1e334bc8202e74b",
+    "after_intent": {
+      "entity_type": "EXCHANGE",
+      "entity_name": "JPY CNY",
+      "location": "currency market",
+      "information_need": "EXCHANGE_RATE",
+      "travel_date": "2027-04-20",
+      "preferred_language": "ja",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "exchange rate current",
+      "keywords": "現在 為替 レート",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "汇率意图误用营业、预约、站口；查日元人民币当前汇率",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-020.json"
+  },
+  {
+    "before_query": "住宿附近咖啡餐饮（店铺待核） official restaurant shop address hours menu reservation nearby alternative 心斋桥/美国村/住宿附近",
+    "before_task_id": "d3e3c5bbb5d89707c975",
+    "before_raw_request": "work/v092-requests-2.json",
+    "after_query": "Shinsaibashi Osaka Japan レストラン メニュー 料金 住所 公式",
+    "after_task_id": "137dc42039d842ea82cd",
+    "after_intent": {
+      "entity_type": "RESTAURANT",
+      "entity_name": "Shinsaibashi Osaka Japan",
+      "location": "Osaka Japan",
+      "information_need": "RESTAURANT_DISCOVERY",
+      "travel_date": "2027-04-20",
+      "preferred_language": "ja",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "restaurant menu prices address",
+      "keywords": "レストラン メニュー 料金 住所",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": false
+      },
+      "reasons": [
+        "entity_resolved",
+        "no_placeholder_leakage"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "未核餐饮占位实体；按心斋桥地点发现菜单与地址",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-032.json"
+  },
+  {
+    "before_query": "大阪为基地，京都一日往返 food official current price cost reference",
+    "before_task_id": "e9d2d04ed8859023076d",
+    "before_raw_request": "work/v092-requests-2.json",
+    "after_query": "Namba Osaka Japan restaurant menu prices address official",
+    "after_task_id": "e567dfb9ea1e2b2ec281",
+    "after_intent": {
+      "entity_type": "RESTAURANT",
+      "entity_name": "Namba Osaka Japan",
+      "location": "Osaka Japan",
+      "information_need": "RESTAURANT_DISCOVERY",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "restaurant menu prices address",
+      "keywords": "restaurant menu prices address",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "entity_resolved",
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "泛化全旅行 food；收窄难波区域餐厅菜单与价格",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-019.json"
+  },
+  {
+    "before_query": "大阪为基地，京都一日往返 insurance official current price cost reference",
+    "before_task_id": "42ebc06e7bb629da109e",
+    "before_raw_request": "work/v092-requests-3.json",
+    "after_query": "Japan visitor travel insurance 8 days Japan price tariff official",
+    "after_task_id": "971ad78e62cb1f85b3e1",
+    "after_intent": {
+      "entity_type": "COST",
+      "entity_name": "Japan visitor travel insurance 8 days",
+      "location": "Japan",
+      "information_need": "SERVICE_PRICE",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "price tariff",
+      "keywords": "price tariff",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "entity_resolved",
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "保险泛模板包含整个行程；改为日本访客八日保险费率",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-019.json"
+  },
+  {
+    "before_query": "心斋桥筋商店街（具体停留点待核） official opening hours admission ticket reservation nearest station access",
+    "before_task_id": "07ad940aac3f77da8f40",
+    "before_raw_request": "work/v092-requests-3.json",
+    "after_query": "心斋桥筋商店街 Osaka Japan opening hours official",
+    "after_task_id": "e0cc9c4cd5a882cc9106",
+    "after_intent": {
+      "entity_type": "ATTRACTION",
+      "entity_name": "心斋桥筋商店街",
+      "location": "Osaka Japan",
+      "information_need": "OPENING_HOURS",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "opening hours",
+      "keywords": "opening hours",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": false
+      },
+      "reasons": [
+        "keywords_relevant",
+        "no_placeholder_leakage"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "商店街营业混入门票、预约、站口；只查商店街营业",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-001.json"
+  },
+  {
+    "before_query": "大阪为基地，京都一日往返 internet official current price cost reference",
+    "before_task_id": "ea0487fe6a7a29316a79",
+    "before_raw_request": "work/v092-requests-4.json",
+    "after_query": "Japan tourist data SIM 8 days Japan price tariff official",
+    "after_task_id": "96e0e19b1b6a3f2ac9b5",
+    "after_intent": {
+      "entity_type": "COST",
+      "entity_name": "Japan tourist data SIM 8 days",
+      "location": "Japan",
+      "information_need": "SERVICE_PRICE",
+      "travel_date": "2027-04-20",
+      "preferred_language": "en",
+      "preferred_source": "OFFICIAL",
+      "expected_output": "price tariff",
+      "keywords": "price tariff",
+      "origin": null,
+      "destination": null,
+      "date_scope": "CURRENT_REFERENCE",
+      "check_in": "2027-04-20",
+      "check_out": "2027-04-27",
+      "guest_count": 2,
+      "room_count": null
+    },
+    "before_gate_using_repaired_intent": {
+      "status": "REGENERATE_OR_RESOLVE_ENTITY",
+      "checks": {
+        "entity_resolved": false,
+        "intent_specific": true,
+        "keywords_relevant": false,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": [
+        "entity_resolved",
+        "keywords_relevant"
+      ]
+    },
+    "after_gate": {
+      "status": "PASS",
+      "checks": {
+        "entity_resolved": true,
+        "intent_specific": true,
+        "keywords_relevant": true,
+        "language_valid": true,
+        "location_sufficient": true,
+        "date_scope_correct": true,
+        "no_placeholder_leakage": true
+      },
+      "reasons": []
+    },
+    "reason": "internet 泛模板；改查日本游客八日数据卡费率",
+    "actual_live_search_artifact": "acceptance/evidence/v093-live/capture-032.json"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "smart-travel-planner",
+  "version": "1.0.2",
+  "description": "A research-first travel decision workflow with evidence-gated autonomous replanning, constraint-aware routes, budgets, and a Word handbook.",
+  "author": {
+    "name": "Smart Travel Planner contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "travel",
+    "itinerary",
+    "budget",
+    "research",
+    "mcp"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Smart Travel Planner",
+        "shortDescription": "Research-first travel planning with evidence and a Word handbook",
+        "longDescription": "Research lodging, flights, sights, transit and dining; compare evidence-backed options, optimize a provisional route, then refine after confirmation or explicit delegation.",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png",
+        "brandColor": "#146AA8",
+        "defaultPrompt": [
+          "Plan an 8-day trip to Japan.",
+          "Build a realistic trip budget and itinerary."
+        ]
+      }
+    }
+  }
+}

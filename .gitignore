@@ -1,0 +1,19 @@
+# Runtime output and personal research must never be committed.
+outputs/
+work/
+acceptance/
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.local
+*.log
+*.docx
+*.pdf
+*.zip
+*.sha256
+# This tracked catalog is safe; do not commit personal host config.
+.codex/config.toml
+.claude/settings.local.json

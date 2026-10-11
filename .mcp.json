@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "smart-travel-mcp": {
+      "command": "python",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/installer/start_mcp.py"
+      ]
+    }
+  }
+}

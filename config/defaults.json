@@ -1,0 +1,29 @@
+{
+  "initial_search_budget": 15,
+  "questions_per_round_max": 5,
+  "image_count_max": 6,
+  "currency": "ask_or_keep_native",
+  "weather_forecast_window_days": 15,
+  "map_route_estimates_must_be_labeled": true,
+  "budget_replanning_rounds_max": 3,
+  "hotel_search_attempts_max": 4,
+  "flight_search_attempts_max": 4,
+  "route_search_attempts_max": 3,
+  "research": {
+    "max_rounds": 4,
+    "max_queries_per_gap": 6,
+    "max_sources_per_gap": 5,
+    "max_total_queries": 64,
+    "max_total_opened_sources": 96,
+    "max_tasks_per_round": 16
+  },
+  "research_value_weights": {
+    "blocking": 3,
+    "usefulness": 4,
+    "information_gain": 2,
+    "reuse": 3,
+    "success": 2,
+    "retry_cost": 3,
+    "uncertainty": 2
+  }
+}

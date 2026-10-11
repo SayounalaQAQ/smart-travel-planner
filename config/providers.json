@@ -1,0 +1,145 @@
+{
+  "providers": {
+    "geocoding": {
+      "primary": {
+        "name": "open-meteo-geocoding",
+        "base_url": "https://geocoding-api.open-meteo.com/v1/search",
+        "health_check_url": "https://geocoding-api.open-meteo.com/v1/search?name=Tokyo&count=1",
+        "requires_key": false,
+        "capability": "place_geocoding"
+      },
+      "fallback": {
+        "name": "nominatim-openstreetmap",
+        "base_url": "https://nominatim.openstreetmap.org/search",
+        "health_check_url": "https://nominatim.openstreetmap.org/search?q=Tokyo&format=jsonv2&limit=1",
+        "requires_key": false,
+        "note": "User-triggered fallback only; minimum 1 second between requests; identify the application; attribute OSM/ODbL; do not submit personal/confidential data.",
+        "usage_policy_url": "https://operations.osmfoundation.org/policies/nominatim/"
+      },
+      "capability": "place_geocoding"
+    },
+    "weather": {
+      "primary": {
+        "name": "open-meteo-forecast",
+        "base_url": "https://api.open-meteo.com/v1/forecast",
+        "health_check_url": "https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&daily=temperature_2m_max&forecast_days=1&timezone=Asia%2FTokyo",
+        "requires_key": false,
+        "capability": "short_range_forecast_and_historical_climate_fallback"
+      },
+      "fallback": {
+        "name": "agent-seasonal-research",
+        "type": "manual"
+      },
+      "capability": "short_range_forecast_and_historical_climate_fallback"
+    },
+    "exchange": {
+      "primary": {
+        "name": "frankfurter",
+        "base_url": "https://api.frankfurter.dev/v1",
+        "health_check_url": "https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY",
+        "requires_key": false,
+        "capability": "reference_exchange_rate"
+      },
+      "fallback": {
+        "name": "keep-native-currency",
+        "type": "manual"
+      },
+      "capability": "reference_exchange_rate"
+    },
+    "places": {
+      "primary": {
+        "name": "openstreetmap-overpass",
+        "base_url": "https://overpass-api.de/api/interpreter",
+        "health_check_url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A5%5D%3Bnode%2835.68%2C139.68%2C35.69%2C139.69%29%3Bout%201%3B",
+        "requires_key": false,
+        "capability": "mapped_place_search"
+      },
+      "fallback": {
+        "name": "native-agent-search",
+        "type": "agent"
+      },
+      "capability": "mapped_place_search"
+    },
+    "images": {
+      "primary": {
+        "name": "wikimedia-commons",
+        "base_url": "https://commons.wikimedia.org/w/api.php",
+        "health_check_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&meta=siteinfo",
+        "requires_key": false,
+        "capability": "licensed_image_search_and_download"
+      },
+      "fallback": {
+        "name": "omit-images",
+        "type": "manual"
+      },
+      "capability": "licensed_image_search_and_download"
+    },
+    "search": {
+      "primary": {
+        "name": "native-agent-search",
+        "type": "agent",
+        "requires_key": false,
+        "capability": "provider_abstracted_web_research"
+      },
+      "keyed_fallback": {
+        "name": "Brave Search API",
+        "type": "brave",
+        "base_url": "https://api.search.brave.com/res/v1/web/search",
+        "environment_variable": "BRAVE_SEARCH_API_KEY",
+        "requires_key": true,
+        "capability": "provider_abstracted_web_research"
+      },
+      "fallback": {
+        "name": "wikipedia-api",
+        "adapter": "wikipedia",
+        "base_url": "https://en.wikipedia.org/w/api.php",
+        "health_check_url": "https://en.wikipedia.org/w/api.php?action=query&format=json&meta=siteinfo",
+        "requires_key": false
+      },
+      "capability": "provider_abstracted_web_research"
+    },
+    "transit": {
+      "primary": {
+        "name": "no-transit-provider",
+        "type": "unavailable",
+        "requires_key": false,
+        "capability": "no_structured_transit_provider; use official_host_research_fallback"
+      },
+      "fallback": {
+        "name": "host-native-search-or-maps",
+        "type": "agent",
+        "note": "The Skill must use host tools to verify official operator routes, fares, service dates, and first/last transit; MCP must not infer timetable durations.",
+        "capability": "official_operator_route_fare_and_first_last_service_research"
+      },
+      "capability": "no_structured_transit_provider; use official_host_research_fallback"
+    },
+    "routing": {
+      "primary": {
+        "name": "fossgis-osrm-openstreetmap",
+        "base_url": "https://routing.openstreetmap.de",
+        "health_check_url": "https://routing.openstreetmap.de/routed-car/route/v1/driving/13.38886,52.517037;13.397634,52.529407?overview=false",
+        "requires_key": false,
+        "capability": "walking_and_driving_route_estimates"
+      },
+      "fallback": {
+        "name": "geographic-clustering-estimate",
+        "type": "manual"
+      },
+      "capability": "walking_and_driving_route_estimates"
+    },
+    "place_details": {
+      "primary": {
+        "name": "openstreetmap-overpass-tags",
+        "base_url": "https://overpass-api.de/api/interpreter",
+        "health_check_url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A5%5D%3Bnode%2835.68%2C139.68%2C35.69%2C139.69%29%3Bout%201%3B",
+        "requires_key": false,
+        "capability": "mapped_place_metadata_not_authoritative_hours"
+      },
+      "fallback": {
+        "name": "official-web-research",
+        "type": "manual"
+      },
+      "capability": "mapped_place_metadata_not_authoritative_hours"
+    }
+  }
+}

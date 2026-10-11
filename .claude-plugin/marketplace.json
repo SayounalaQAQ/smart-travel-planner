@@ -1,0 +1,13 @@
+{
+  "name": "smart-travel-planner-marketplace",
+  "owner": {
+    "name": "SayounalaQAQ"
+  },
+  "plugins": [
+    {
+      "name": "smart-travel-planner",
+      "source": "./",
+      "description": "Personalized travel research with sourced photos and a Word handbook"
+    }
+  ]
+}

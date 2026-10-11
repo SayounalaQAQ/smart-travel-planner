@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "dependencies": [
+    {
+      "name": "python",
+      "version": ">=3.10",
+      "required": true,
+      "source": "python.org",
+      "install": "user-managed runtime"
+    },
+    {
+      "name": "python-docx",
+      "version": "1.2.0",
+      "required": false,
+      "source": "PyPI",
+      "sha256": null,
+      "install": "pip install -r requirements-docx.txt"
+    },
+    {
+      "name": "Pillow",
+      "version": "12.3.0",
+      "required": false,
+      "source": "PyPI",
+      "sha256": null,
+      "install": "pip install -r requirements-docx.txt",
+      "note": "Optional DOCX image verification and normalization."
+    },
+    {
+      "name": "smart-travel-mcp",
+      "version": "1.0.2",
+      "repository": null,
+      "ref": null,
+      "commit": null,
+      "sha256": null,
+      "runtime": "python >=3.10",
+      "required": false,
+      "note": "Bundled local source; no external repository fetched or executed"
+    }
+  ]
+}

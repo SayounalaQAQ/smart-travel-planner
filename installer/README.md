@@ -1,0 +1,9 @@
+# Installer and capability detection
+
+Run `python installer/detect_environment.py`, `python installer/check_dependencies.py`, then `python installer/verify_installation.py`. These scripts are inspect-only; `install_mcp.py` prints the local command rather than silently editing client configuration. Runtime policy may prohibit installation or filesystem access. No remote repository is fetched or run.
+
+V0.9.1: `install_mcp.py --auto` validates the bundled server with a real stdio handshake, 13-tool discovery and a bounded health call. It never changes host settings; `--confirm` reports mode B and `--disabled` reports mode C. Verification checks that MCP and manifest versions match; a development-only `.agents` marketplace is not required inside the distribution. A responding health endpoint does not imply every external provider is reachable—read each provider status and use the host's available fallback.
+
+`prepare_plugin.py` resolves the full root and Python 3.10+ independently of cwd; `--configure-runtime --python <executable>` explicitly pins that interpreter only in the selected plugin's MCP configurations. `start_mcp.py` keeps Windows stdio connected. Verification checks the Skill-local entry, image/Word/delivery scripts and references; duplicate standalone Skill detection warns but never deletes files. Follow `README-ADVANCED.md`.
+
+V1.0.2: `validate_distribution.py` validates two marketplace catalogs, root resolution, manifests and versions without installing a host plugin. `verify_release.py --archive <zip> --sha256-file <sidecar>` checks digest, named artifact, safe archive paths and bounded contents without extracting/executing downloaded code. Use host-native hashing first before trusting the downloaded helper. Claude persistent user install is documented in `README-BEGINNER.md`; cloud execution/approval boundaries are in `README-AI-INSTALL.md`. Real host installs remain NOT_TESTED.

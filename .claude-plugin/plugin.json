@@ -1,0 +1,8 @@
+{
+  "name": "smart-travel-planner",
+  "description": "A research-first travel decision workflow that discovers options, presents evidence-backed trade-offs, and supports provisional and final plans.",
+  "version": "1.0.2",
+  "author": {
+    "name": "Smart Travel Planner contributors"
+  }
+}

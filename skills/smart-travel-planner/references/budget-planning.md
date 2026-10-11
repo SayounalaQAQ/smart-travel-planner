@@ -1,0 +1,4 @@
+# Budget planning
+Break down transit, lodging, attractions, food, shopping, internet, insurance, visa-related costs, misc, and emergency. State currency, dates, traveler count, inclusion/exclusion, and confidence. Distinguish quoted live prices from estimates; give low/recommended/comfort bands and biggest drivers. Consider passes only after comparing against planned usage.
+
+Before presenting a plan against a hard cap, use `scripts/optimize_budget.py` with explicitly stated `saving_options`. Each option must name a category, maximum plausible saving, trade-off score (0–10), and basis. A `verified` saving needs a source URL; an `estimated` saving needs an assumption. Never apply protected costs, user must-haves, or mutually exclusive options from the same `option_group`. Report original and projected totals, selected changes, and any remaining gap. Do not silently alter the user's stated budget or present a gap as solved.

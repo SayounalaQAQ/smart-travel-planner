@@ -1,0 +1,2 @@
+# Itinerary optimization
+Cluster nearby activities. Include travel and buffer time, meals, check-in/out, opening hours, last transit, weather sensitivity, queue/booking risk, rest, and a plausible nightly return. Use destination or lodging-area anchors for provisional route skeletons; a hotel street address is needed only for property-level refinement. Show effort low/medium/high and approximate walking only as a range. Offer rain plan and contingency for disruptions. Never mark routes `ROUTE_PENDING` solely because the user has not named a hotel.

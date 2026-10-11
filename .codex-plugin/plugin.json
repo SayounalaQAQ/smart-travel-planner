@@ -1,0 +1,22 @@
+{
+  "name": "smart-travel-planner",
+  "version": "1.0.2",
+  "description": "A research-first travel decision workflow with evidence-gated autonomous replanning, constraint-aware routes, budgets, and a Word handbook.",
+  "author": {
+    "name": "Smart Travel Planner contributors"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "mcpServers": "./adapters/codex/mcp.json",
+  "interface": {
+    "displayName": "Smart Travel Planner",
+    "shortDescription": "Evidence-based travel planning",
+    "longDescription": "Research personalized experiences, plan routes and budgets, track sources, and deliver a Word handbook for complete multi-day plans.",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "brandColor": "#146AA8",
+    "defaultPrompt": [
+      "Plan an 8-day trip to Japan."
+    ]
+  }
+}

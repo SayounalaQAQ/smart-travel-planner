@@ -1,0 +1,490 @@
+{
+  "title": "东京城市旅行手册",
+  "subtitle": "行程概要与实用信息",
+  "summary": "这份计划按东京 8 日行程整理，交通、开放时间和价格需按实际日期重新核对。住宿地址未定，门到门路线与分钟数将在选定住宿后补充。",
+  "profile": {
+    "目的地": "日本东京",
+    "日期": "2027-04-12 至 2027-04-19",
+    "天数": 8,
+    "人数": "2 人（假设）",
+    "出发地": "上海",
+    "预算": "JPY 350,000 / 两人总额，不含国际机票",
+    "住宿": "交通便利区域；具体地址待确定",
+    "节奏": "平衡，安排一晚休息（假设）",
+    "兴趣": "初次到访的城市经典体验（假设）"
+  },
+  "lodging_recommendation": "优先比较上野/浅草（相对适合东侧景点、餐饮选择较多）与新宿/涩谷（夜间活动和西侧交通更便利、住宿成本可能更高）。这是区域层面的初筛，不是实时房价结论；根据机场和每日路线确定后再比价。",
+  "budget": {
+    "currency": "JPY",
+    "traveler_count": 2,
+    "note": "Illustrative estimating bands, not live quotes; excludes international airfare and shopping in this sample. Accommodation/food bands are planning placeholders.",
+    "low": {
+      "transport": 16000,
+      "accommodation": 84000,
+      "attractions": 10000,
+      "food": 56000,
+      "shopping": 0,
+      "internet": 3000,
+      "insurance": 5000,
+      "visa_related": 0,
+      "misc": 8000,
+      "emergency": 10000
+    },
+    "recommended": {
+      "transport": 22000,
+      "accommodation": 126000,
+      "attractions": 20000,
+      "food": 84000,
+      "shopping": 0,
+      "internet": 5000,
+      "insurance": 8000,
+      "visa_related": 0,
+      "misc": 12000,
+      "emergency": 20000
+    },
+    "comfortable": {
+      "transport": 28000,
+      "accommodation": 168000,
+      "attractions": 30000,
+      "food": 112000,
+      "shopping": 0,
+      "internet": 8000,
+      "insurance": 12000,
+      "visa_related": 0,
+      "misc": 20000,
+      "emergency": 30000
+    }
+  },
+  "days": [
+    {
+      "date": "示例 Day 1",
+      "area": "浅草—隅田川",
+      "theme": "抵达与缓冲",
+      "effort": "低",
+      "walking_estimate": "约 5,000–8,000 步（估算）",
+      "activities": [
+        {
+          "time": "下午",
+          "activity": "机场至住宿区、办理入住",
+          "note": "依实际机场与航班核验交通方式；保留延误缓冲"
+        },
+        {
+          "time": "傍晚",
+          "activity": "浅草寺周边与隅田川步行",
+          "note": "户外天气敏感；避免将购物街营业时间写死"
+        }
+      ],
+      "transport": "机场交通需按航班/机场核验；市内交通为估算",
+      "estimated_cost": "两人约 ¥8,000–18,000（含餐食估算）",
+      "risk": "航班延误、入住时间",
+      "rain_plan": "改为室内商场/咖啡馆，浅草外观留待晴天",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "浅草—隅田川",
+          "alternative": "改为室内商场/咖啡馆，浅草外观留待晴天"
+        }
+      ]
+    },
+    {
+      "date": "示例 Day 2",
+      "area": "上野—谷中",
+      "theme": "博物馆与老街",
+      "effort": "中",
+      "walking_estimate": "约 8,000–12,000 步（估算）",
+      "activities": [
+        {
+          "time": "上午",
+          "activity": "上野公园；择一博物馆",
+          "note": "各馆开放日、票价及临展逐一看官网"
+        },
+        {
+          "time": "下午",
+          "activity": "谷中银座周边散步",
+          "note": "店铺营业时间各异，作为弹性活动"
+        }
+      ],
+      "transport": "区域内步行与市内轨道交通；时间估算",
+      "estimated_cost": "两人约 ¥8,000–18,000",
+      "risk": "博物馆闭馆日及临展预约",
+      "rain_plan": "选择开放的博物馆/美术馆",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "上野—谷中",
+          "alternative": "选择开放的博物馆/美术馆"
+        }
+      ]
+    },
+    {
+      "date": "示例 Day 3",
+      "area": "东京站—丸之内—银座",
+      "theme": "城市建筑与购物可选",
+      "effort": "中",
+      "walking_estimate": "约 7,000–11,000 步（估算）",
+      "activities": [
+        {
+          "time": "上午",
+          "activity": "东京站丸之内一带",
+          "note": "公共空间免费区域与商业设施区分"
+        },
+        {
+          "time": "下午",
+          "activity": "皇居外苑周边；视开放安排调整",
+          "note": "入园/参观规则以宫内厅当日公告为准"
+        }
+      ],
+      "transport": "区域聚类；交通时间估算",
+      "estimated_cost": "两人约 ¥8,000–20,000",
+      "risk": "皇居设施需核验开放与预约",
+      "rain_plan": "东京站周边室内空间",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "东京站—丸之内—银座",
+          "alternative": "东京站周边室内空间"
+        }
+      ]
+    },
+    {
+      "date": "示例 Day 4",
+      "area": "原宿—涩谷",
+      "theme": "街区与城市景观",
+      "effort": "中高",
+      "walking_estimate": "约 9,000–14,000 步（估算）",
+      "activities": [
+        {
+          "time": "上午",
+          "activity": "明治神宫周边",
+          "note": "户外为主，尊重场所礼仪"
+        },
+        {
+          "time": "下午",
+          "activity": "原宿至涩谷街区",
+          "note": "热门展望设施需提前核验预约与票价"
+        }
+      ],
+      "transport": "步行结合铁路；高峰拥挤，时间估算",
+      "estimated_cost": "两人约 ¥10,000–25,000",
+      "risk": "周末人流及展望设施时段票",
+      "rain_plan": "将户外神宫改到晴天，增加室内展览/商场",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "原宿—涩谷",
+          "alternative": "将户外神宫改到晴天，增加室内展览/商场"
+        }
+      ]
+    },
+    {
+      "date": "示例 Day 5",
+      "area": "新宿",
+      "theme": "城市公园与休整",
+      "effort": "低中",
+      "walking_estimate": "约 6,000–10,000 步（估算）",
+      "activities": [
+        {
+          "time": "上午",
+          "activity": "新宿御苑或其他公园（开放时）",
+          "note": "须核验闭园日、门票与季节开放"
+        },
+        {
+          "time": "下午",
+          "activity": "自由活动/洗衣/休息",
+          "note": "降低连续高强度疲劳"
+        }
+      ],
+      "transport": "区域步行与铁路；估算",
+      "estimated_cost": "两人约 ¥8,000–18,000",
+      "risk": "公园闭园日、花期客流",
+      "rain_plan": "安排室内体验或休息",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "新宿",
+          "alternative": "安排室内体验或休息"
+        }
+      ]
+    },
+    {
+      "date": "示例 Day 6",
+      "area": "台场或丰洲（二选一）",
+      "theme": "湾岸体验",
+      "effort": "中",
+      "walking_estimate": "约 7,000–12,000 步（估算）",
+      "activities": [
+        {
+          "time": "上午",
+          "activity": "根据兴趣选择 teamLab 等需预约体验或免费湾岸步行",
+          "note": "预约、票价、地点需用官方渠道重新核对"
+        },
+        {
+          "time": "下午",
+          "activity": "湾岸商场/海滨公园",
+          "note": "户外项目受风雨影响"
+        }
+      ],
+      "transport": "特别交通方式与费用需提前核验；不假定通票划算",
+      "estimated_cost": "两人约 ¥12,000–30,000",
+      "risk": "热门时段售罄、临海风雨",
+      "rain_plan": "室内展览与商业设施",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "台场或丰洲（二选一）",
+          "alternative": "室内展览与商业设施"
+        }
+      ]
+    },
+    {
+      "date": "示例 Day 7",
+      "area": "自由选择/近郊备选",
+      "theme": "按体力与天气弹性安排",
+      "effort": "低中",
+      "walking_estimate": "约 5,000–10,000 步（估算）",
+      "activities": [
+        {
+          "time": "上午",
+          "activity": "补逛最喜欢的区域",
+          "note": "不新增跨城移动作为默认"
+        },
+        {
+          "time": "下午",
+          "activity": "预留购物、打包与休息",
+          "note": "为返程日减少不确定性"
+        }
+      ],
+      "transport": "依最终选择核验",
+      "estimated_cost": "两人约 ¥8,000–25,000",
+      "risk": "避免临时远距离行程",
+      "rain_plan": "室内购物/博物馆",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "自由选择/近郊备选",
+          "alternative": "室内购物/博物馆"
+        }
+      ]
+    },
+    {
+      "date": "示例 Day 8",
+      "area": "住宿地—机场",
+      "theme": "返程",
+      "effort": "低",
+      "walking_estimate": "约 3,000–6,000 步（估算）",
+      "activities": [
+        {
+          "time": "上午",
+          "activity": "退房与机场移动",
+          "note": "按机场、航班、行李和交通服务时刻核验；预留缓冲"
+        }
+      ],
+      "transport": "路线和末班/首班时刻待出行日确认",
+      "estimated_cost": "两人约 ¥5,000–15,000",
+      "risk": "交通中断、行李/退房规则",
+      "rain_plan": "尽量选择有遮蔽的交通衔接并增加缓冲",
+      "route_state": "ROUTE_PENDING",
+      "route_chain": [],
+      "route_summary": "住宿地点确定后补充门到门路线；当前交通时间为估算。",
+      "plan_b_route": [
+        {
+          "replace_area": "住宿地—机场",
+          "alternative": "尽量选择有遮蔽的交通衔接并增加缓冲"
+        }
+      ]
+    }
+  ],
+  "savings": [
+    "比较酒店区域与含税总价，确认房型、入住日期和取消政策。",
+    "只在已排定行程上计算交通票券是否划算。",
+    "安排免费公园/街区步行，付费景点优先选择真正感兴趣的项目。",
+    "避免跨城赶场和为低价车票牺牲大量时间。"
+  ],
+  "bookings": [
+    "热门展望台/沉浸式展览：确定日期后核验官方售票与预约规则。",
+    "博物馆与季节性活动：核验闭馆日、限时展览和线上预约。",
+    "住宿：确定航班和人数后，比较可取消的含税房价。"
+  ],
+  "risks": [
+    "所有示例费用为估算，无实时酒店、机票或门票报价。",
+    "日本春季天气和花期每年变化；本示例不代表 2027 年预报。",
+    "交通线路、营业时间、预约政策请于出行前和当天向运营方核实。",
+    "行程按东京单城设计；机场及住宿未知，机场交通仍待定。"
+  ],
+  "checklist": [
+    "确认具体日期、出发地、航班机场与行李。",
+    "确认护照、签证/入境要求及旅行保险。",
+    "按实际日期核对景点官网的票价、开放时间与预约。",
+    "准备支付方式、网络方案及离线地址。",
+    "出发前复核天气、交通服务公告和住宿入住规则。"
+  ],
+  "attractions": [
+    {
+      "name": "Sensoji Temple",
+      "tagline": "传统寺院街区与隅田川周边步行体验",
+      "why_visit": "按东京城市经典街区纳入候选，区域内步行衔接清晰。",
+      "not_recommended_when": "不喜欢拥挤街区时应缩短停留并避开午间人流。",
+      "main_highlights": "浅草寺、雷门、仲见世周边",
+      "estimated_visit_duration": "约 1.5–2.5 小时（估算）",
+      "ticket_price": "寺院公共区域免费；其他活动另行核验",
+      "opening_hours": "活动与商户时间各异，按官方页面复核",
+      "reservation_required": "通常无需预约；特殊活动需另查",
+      "best_time_of_day": "较早或傍晚；按旅客节奏和人流调整",
+      "transport_info": "实际站点与路线待住宿地址和出行日期确定",
+      "source_url": "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/index.html",
+      "source_checked_at": "2026-10-07T02:31:42Z"
+    }
+  ],
+  "images": [
+    {
+      "attraction": "Sensoji Temple",
+      "local_path": "tests/fixtures/images/sensoji-cc0.jpg",
+      "title": "Sensoji Temple photograph",
+      "page_url": "https://commons.wikimedia.org/wiki/File:20181123_Sens%C5%8D-ji-5.jpg",
+      "source": "Wikimedia Commons",
+      "license": "CC0",
+      "artist": "Balon Greyjoy",
+      "retrieved_at": "2026-10-07T02:32:52Z"
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "东京塔图片来源、署名与许可",
+      "value": "INTERNAL_EVIDENCE_PRIVATE_SENTINEL",
+      "source_title": "Tokyo Tower, Minato City.jpg — Wikimedia Commons",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Tokyo_Tower,_Minato_City.jpg",
+      "source_type": "medium",
+      "checked_at": "2026-10-06T15:58:15Z",
+      "applicable_date": "image license metadata checked 2026-10-06",
+      "confidence": "high"
+    },
+    {
+      "claim": "东京地点信息/天气接口能力",
+      "value": "地理编码及短期预报能力；不是对示例出行日期的预测",
+      "source_title": "Open-Meteo Geocoding API",
+      "source_url": "https://open-meteo.com/en/docs/geocoding-api",
+      "source_type": "medium",
+      "checked_at": "2026-10-06T15:06:58Z",
+      "applicable_date": "provider capability",
+      "confidence": "medium"
+    },
+    {
+      "claim": "旅日基础信息入口",
+      "value": "行前需针对每一景点和交通运营方重新核验",
+      "source_title": "Japan National Tourism Organization",
+      "source_url": "https://www.japan.travel/en/",
+      "source_type": "official",
+      "checked_at": "2026-10-06T15:06:58Z",
+      "applicable_date": "general; not specific ticket/hour claim",
+      "confidence": "high"
+    },
+    {
+      "claim": "东京住宿区域和交通官方信息",
+      "value": "示例未实时查询房价/路线，使用前需按地址核验",
+      "source_title": "Tokyo Metropolitan Government Official Travel Guide",
+      "source_url": "https://www.gotokyo.org/en/",
+      "source_type": "official",
+      "checked_at": "2026-10-06T15:06:58Z",
+      "applicable_date": "general; recheck at booking",
+      "confidence": "high"
+    },
+    {
+      "claim": "汇率工具来源",
+      "value": "示例预算保留日元，不含汇率换算；Frankfurter提供参考汇率接口",
+      "source_title": "Frankfurter API",
+      "source_url": "https://www.frankfurter.dev/",
+      "source_type": "high",
+      "checked_at": "2026-10-06T15:06:58Z",
+      "applicable_date": "not a quote",
+      "confidence": "medium"
+    }
+  ],
+  "destination": "Tokyo, Japan",
+  "critical_info": {
+    "destination": "Tokyo, Japan",
+    "destination_scope": "city",
+    "destination_resolved": true,
+    "travel_window": "2027-04-12 to 2027-04-19",
+    "duration_days": 8,
+    "traveler_count": 2,
+    "budget_amount": 350000,
+    "budget_currency": "JPY",
+    "budget_scope": "whole party; international airfare excluded",
+    "origin": "Shanghai, China",
+    "free_accommodation": false
+  },
+  "mode": "TEST_SYNTHETIC",
+  "trip_profile": {
+    "destination": "Tokyo, Japan",
+    "destination_scope": "city",
+    "duration_days": 8,
+    "traveler_count": 2,
+    "travel_window": "2027-04-12 to 2027-04-19",
+    "origin": "Shanghai, China",
+    "budget_amount": 350000,
+    "budget_currency": "JPY",
+    "budget_scope": "whole party; international airfare excluded",
+    "free_accommodation": false,
+    "pace": "balanced",
+    "interests": [
+      "photography",
+      "food"
+    ],
+    "sleep_schedule": "regular",
+    "walking_tolerance_steps": 12000
+  },
+  "field_provenance": {
+    "destination": "user",
+    "duration_days": "user",
+    "traveler_count": "user",
+    "travel_window": "user",
+    "origin": "user",
+    "budget_amount": "user",
+    "budget_currency": "user",
+    "budget_scope": "user"
+  },
+  "lodging_location": null,
+  "key_decisions": [
+    "按东侧、西侧与湾岸分区安排，减少跨区折返。",
+    "住宿地址确定前不提供门到门分钟数。",
+    "早晚留出休息和转场缓冲。"
+  ],
+  "omitted_attractions": [
+    {
+      "name": "东京迪士尼度假区",
+      "why_not": "需要完整游玩日且会显著增加预算，本次优先安排城市街区；偏好主题乐园时应替换一整天。",
+      "best_for": "计划一整天主题乐园体验的旅客。"
+    },
+    {
+      "name": "银座深度购物",
+      "why_not": "购物不是此画像的优先兴趣，路线时间留给更匹配的街区活动。",
+      "best_for": "以品牌购物为主要目标的旅客。"
+    }
+  ],
+  "public_sources": [
+    {
+      "title": "GO TOKYO Official Asakusa Guide",
+      "url": "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/index.html",
+      "checked_at": "2026-10-07T02:31:42Z"
+    },
+    {
+      "title": "Sensoji Temple photograph, Wikimedia Commons, CC0",
+      "url": "https://commons.wikimedia.org/wiki/File:20181123_Sens%C5%8D-ji-5.jpg",
+      "checked_at": "2026-10-07T02:32:52Z"
+    }
+  ]
+}

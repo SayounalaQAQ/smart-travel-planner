@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "smart-travel-mcp": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "${PLUGIN_ROOT}/installer/start_mcp.py"
+      ]
+    }
+  }
+}

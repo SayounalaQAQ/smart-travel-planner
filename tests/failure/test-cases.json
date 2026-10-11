@@ -1,0 +1,1 @@
+{"cases":["Search provider unavailable: native search or explicit degraded mode.","Weather provider timeout: explain fallback and never invent a forecast.","Exchange provider unavailable: preserve native currency.","DOCX dependency missing: structured plan still succeeds."]}
