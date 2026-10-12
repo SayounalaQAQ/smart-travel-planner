@@ -63,7 +63,11 @@ class Distribution(unittest.TestCase):
             self.assertIn('占位',guide)
         else:
             self.assertRegex(repository,r'^[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*$')
-            self.assertIn(repository+'#v1.0.2',guide)
+            self.assertIn('claude plugin marketplace add '+repository+'\n',guide)
+            self.assertNotIn('claude plugin marketplace add '+repository+'#v1.0.2',guide)
+            self.assertIn('修复前的固定快照',guide)
+            self.assertIn('版本元数据仍为 1.0.2',guide)
+            self.assertIn('scripts/handbook_validation.py',guide)
             self.assertNotIn('YOUR_GITHUB_OWNER/YOUR_REPOSITORY',guide)
     def test_no_user_work_or_unapproved_image(self):
         names=[p.relative_to(ROOT).as_posix() for p in distribution_files()]

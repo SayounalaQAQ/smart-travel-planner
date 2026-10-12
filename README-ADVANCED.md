@@ -2,19 +2,21 @@
 
 ## 获取和预检
 
-从 [正式仓库](https://github.com/SayounalaQAQ/smart-travel-planner) 克隆固定版本；发行包见 [v1.0.2 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.2)。不要自动搜索同名 GitHub 项目安装。
+从 [正式仓库](https://github.com/SayounalaQAQ/smart-travel-planner) 获取 `main` 上的最新交付修复并记录 commit。版本元数据保持 1.0.2；[v1.0.2 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.2) 是未覆盖的历史快照，不含这些修复。不要自动搜索同名 GitHub 项目安装。
 
 ```sh
 git clone https://github.com/SayounalaQAQ/smart-travel-planner.git
 cd smart-travel-planner
-git checkout v1.0.2
+git checkout main
+git pull --ff-only
+git rev-parse HEAD
 python --version
 python -m venv .venv
 ```
 
 Windows PowerShell：`.venv\Scripts\python.exe -m pip install -r requirements-docx.txt`。
 macOS/Linux：`.venv/bin/python -m pip install -r requirements-docx.txt`。
-后续 `python` 表示你选定的 Python 3.10+。只运行已审查的固定版本源码，使用宿主批准的依赖源。依赖锁定版本，但当前 requirements 未含供应链签名或 wheel hash；SHA256 不替代来源审查。
+后续 `python` 表示你选定的 Python 3.10+。审查源码后可用 `git checkout <记录的commit>` 固定这次安装；`git checkout v1.0.2` 仅用于历史复现。只运行已审查的源码，使用宿主批准的依赖源。依赖锁定版本，但当前 requirements 未含供应链签名或 wheel hash；SHA256 不替代来源审查。GitHub 自动生成的 `main` 源码 ZIP 不是旧 Release 资产，不能套用其 SHA256 或目录前缀检查。
 
 ```sh
 python installer/detect_environment.py

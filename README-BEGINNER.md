@@ -6,7 +6,7 @@ Claude Code，以及它能调用的 Python 3.10+。完整图文 Word 还需要 p
 
 ## 安装一次，以后正常启动
 
-可信来源：[本项目 GitHub 仓库](https://github.com/SayounalaQAQ/smart-travel-planner) 和 [v1.0.2 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.2)。推荐使用下方 GitHub 命令安装一次；也可从同一 Release 下载完整 ZIP 并本地安装。
+可信来源：[本项目 GitHub 仓库](https://github.com/SayounalaQAQ/smart-travel-planner)。最新交付修复在 `main`；版本元数据仍为 1.0.2。[v1.0.2 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.2) 是修复前的固定快照，未被覆盖。推荐使用下方 GitHub 命令获取当前源码。使用本地 ZIP 时，应取得本次修复包及它自己的 SHA256；不要用旧 Release 摘要校验新包。
 
 先按下方“ZIP 核验”检查并解压。进入 `smart-travel-planner-1.0.2` 目录，终端运行：
 
@@ -18,10 +18,10 @@ claude plugin list
 
 `--scope user` 是持久用户级安装。确认输出中本插件为 enabled，再重新正常启动 `claude`；以后无需每次 `--plugin-dir`。若被项目或组织政策禁用，按宿主设置启用，不绕过政策。当前仅完成清单/源码验收，真实用户级安装尚待宿主测试。
 
-从正式 GitHub 仓库安装固定版本：
+从正式 GitHub 仓库安装当前 `main`：
 
 ```sh
-claude plugin marketplace add SayounalaQAQ/smart-travel-planner#v1.0.2
+claude plugin marketplace add SayounalaQAQ/smart-travel-planner
 claude plugin install smart-travel-planner@smart-travel-planner-marketplace --scope user
 ```
 
@@ -39,7 +39,7 @@ Skill 可匹配自然语言旅行需求；匹配失败时可明确调用 `/smart
 
 ## ZIP 核验
 
-从同一可信 Release 获取 ZIP 与 `.zip.sha256`，核对发布版本和来源，再比较：
+从同一可信分发位置获取 ZIP 与对应的 `.zip.sha256`，核对来源，再比较。以下文件名是旧固定 Release 示例；本次修复包应替换为实际文件名，不混用校验和：
 
 ```powershell
 Get-FileHash -LiteralPath './Smart-Travel-Planner-1.0.2.zip' -Algorithm SHA256
@@ -50,7 +50,16 @@ macOS/Linux：`sha256sum Smart-Travel-Planner-1.0.2.zip`（macOS 可用 `shasum 
 
 ## 更新和卸载
 
-固定 `#v1.0.2` 的来源不会自动变成后续版本。更新前保存攻略、核验新 Release，按宿主官方 marketplace 管理流程切换 tag/来源，再更新本插件，重新预检。
+固定 `#v1.0.2` 的来源不会取得 `main` 上的修复。已安装旧版时，先在 `/plugin` 的 Marketplaces 中检查来源，按宿主官方流程改为本仓库当前分支，再更新并重启会话。当前版本号未升级，不能仅凭显示“1.0.2”确认缓存已更新；让 Agent 检查加载目录是否包含 `scripts/handbook_validation.py` 及每日住宿连续性规则。
+
+已经跟踪 `main` 的来源可运行：
+
+```sh
+claude plugin marketplace update smart-travel-planner-marketplace
+claude plugin update smart-travel-planner@smart-travel-planner-marketplace
+```
+
+按实际宿主输出确认源码更新，重新启动或重新加载插件后预检。下方卸载命令只用于卸载；移除 marketplace 会卸载其中所有插件，不能当作无损更新操作。
 
 ```sh
 claude plugin uninstall smart-travel-planner@smart-travel-planner-marketplace --scope user
