@@ -62,6 +62,12 @@ def complete_plan(hotel=1000, transit=100):
             if e['mode']=='FLIGHT':
                 e.update(departure_time='10:00' if i==0 else '15:00',arrival_time='13:00' if i==0 else '17:00')
         d['execution_graph'] = graph
+    # A complete contract explicitly binds each necessary segment to the
+    # round-trip quote or the declared transit package; no unpriced edges.
+    for d in p['days']:
+        for e in d['execution_graph']['edges']:
+            e['cost_id']='flight' if e['mode']=='FLIGHT' else 'transit'
+            next(r for r in ledger if r['id']==e['cost_id']).setdefault('covers_edge_ids',[]).append(e['id'])
     return p
 
 

@@ -17,7 +17,7 @@ class Presentation(unittest.TestCase):
     def test_day_relative_title_once(self):
         self.assertEqual(day_heading(1,'Day 1（日期未定）'),'Day 1（日期未定）')
         self.assertEqual(day_heading(2,'Day 2'),'Day 2（日期未定）')
-    def test_real_date_preserved(self):self.assertEqual(day_heading(2,'2027-04-21'),'Day 2 · 2027-04-21')
+    def test_real_date_preserved(self):self.assertEqual(day_heading(2,'2027-04-21'),'Day 2 · 2027-04-21 星期三')
     def test_unresolved_edges_have_natural_explanation(self):
         day={'route_chain':[{'from':'AIRPORT_UNRESOLVED','to':'AIRPORT_UNRESOLVED'}]}
         text=route_summary(day);self.assertNotIn('→',text);self.assertIn('机场',text)

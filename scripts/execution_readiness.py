@@ -30,8 +30,10 @@ def evaluate_plan(plan, *, now=None, synchronize=True):
     if rail:
         out['quote_validation']['flight'] = {'status':'NOT_APPLICABLE', 'refresh_required':False, 'issues':[]}
     flight_quote = next((r for r in out.get("flight_availability", []) if r.get("quote_id") == profile.get("flight_quote_id")), {})
+    previous_night=None
     for index, day in enumerate(out.get("days", [])):
-        day["execution_graph"] = build_execution_graph(profile, day, index)
+        day["execution_graph"] = build_execution_graph(profile, day, index,previous_night)
+        previous_night=day.get('overnight_anchor')
         for edge in day['execution_graph']['edges']:
             if edge.get('mode') == 'FLIGHT' and edge.get('status') == 'VERIFIED':
                 direction = 'OUTBOUND' if day.get('date') == profile.get('start_date') else 'RETURN'
@@ -63,6 +65,10 @@ def evaluate_plan(plan, *, now=None, synchronize=True):
             "traveler_count": profile.get("traveler_count"), "quantity": 1, "cost_type": "UNAVAILABLE",
             "source": None, "checked_at": None, "confidence": "low", "status": "UNAVAILABLE"}
             for category in profile.get("budget_categories", ["hotel", "transit", "food", "attractions", "misc", "emergency"] if rail and profile.get('domestic_trip') is True else ["flight", "hotel", "transit", "food", "attractions", "internet", "insurance", "visa_related", "misc", "emergency"])]
+    from handbook_validation import prepare_required_costs,validate_boundaries,verification_priority
+    out['required_cost_coverage']=prepare_required_costs(out)
+    out['lodging_continuity']=validate_boundaries(out)
+    out['verification_priority']=verification_priority(out,now)
     budget = reconcile_budget(profile, out["cost_ledger"], all_quotes, out.get("exchange_rates"), now=now)
     out["budget_reconciliation"] = budget
     out["budget_status"] = {"user_budget_limit": budget["user_budget_limit_per_person"], "currency": budget["currency"],
@@ -82,6 +88,11 @@ def evaluate_plan(plan, *, now=None, synchronize=True):
         consistency['issues'].extend({**r,'origin':'input_state'} for r in input_consistency['issues'] if (r['code'],r['field']) not in existing)
         consistency['status']='FAIL'
     blockers = []
+    if out['required_cost_coverage']['unknown_required_edges']:blockers.append('REQUIRED_TRANSPORT_COST_UNVERIFIED')
+    for error in out['lodging_continuity']['errors']+out['required_cost_coverage']['errors']:
+        blockers.append(error['code']);conflicts.append({**error,'priority':'HARD_CONSTRAINT'})
+    if out['lodging_continuity']['warnings']:blockers.append('SEASONAL_LODGING_UNVERIFIED')
+    if len({r['place_id'] for r in out['lodging_continuity']['overnights']})>1:blockers.append('OVERNIGHT_PROPERTY_QUOTES_UNVERIFIED')
     if consistency["status"] == "FAIL": blockers.append("STATE_CONSISTENCY_FAILED")
     if not profile.get("start_date") or not profile.get("end_date"): blockers.append("EXACT_DATES_MISSING")
     for kind, validation in out["quote_validation"].items():

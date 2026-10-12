@@ -2,11 +2,14 @@
 """Build a user-facing trip handbook from a confirmed, structured travel plan."""
 import argparse
 import html
+from public_rendering import public_text
 import json
 import re
+import hashlib
 from pathlib import Path
 from travel_utils import trip_readiness
 from travel_readiness import apply_readiness
+from delivery_validation import apply_delivery_checks,planning_delivery_gate,weekday,event_confirmed
 
 
 INTERNAL_TERMS=(r'\bMCP\b',r'tools/call',r'provider unavailable',r'health_check',r'acceptance session',
@@ -42,26 +45,46 @@ def public_status(value):
         'PRICE_UNAVAILABLE':'目标价格暂未取得','PROPERTY_RESEARCH_COMPLETE':'酒店静态资料已取得'}.get(str(value),str(value))
 
 def public_fact(value):
+    if isinstance(value,(dict,list,tuple)):return public_text(value)
     return {'Varies by location':'各商户营业时间不同','Varies by store':'各店营业时间不同',
         'Open at all times':'全天开放','無料':'免费','たこ焼':'章鱼烧','ラーメン':'拉面'}.get(str(value),str(value))
 
 def public_place(value):
+    if isinstance(value,(dict,list,tuple)):return public_text(value)
     return {'AIRPORT_UNRESOLVED':'机场待确定','STATION_UNRESOLVED':'车站待确定',
             'HOTEL_UNRESOLVED':'住宿待确定','ACTIVITY_LOCATION_UNRESOLVED':'活动地点待确定'}.get(str(value),str(value))
 
 def public_preference(value):
+    if isinstance(value,(dict,list,tuple)):return public_text(value)
+    if value=='normal':return '常规作息'
     return {'relaxed':'轻松','balanced':'平衡','intensive':'紧凑','late_start':'晚一些开始',
             'anime':'二次元','kimono':'和服','fireworks':'花火','traditional_culture':'传统文化',
-            'figure_collecting':'手办收藏','retro_games':'复古游戏','pilgrimage':'作品巡礼'}.get(str(value),str(value))
+            'figure_collecting':'手办收藏','retro_games':'复古游戏','pilgrimage':'作品巡礼','regular':'常规作息','SOLO':'单人'}.get(str(value),str(value))
 
 def public_mode(value):
-    return {'WALK':'步行','TRAIN':'铁路','METRO':'地铁','BUS':'巴士','TAXI':'出租车','FLIGHT':'飞行',
+    return {'AIR':'飞机','WALK':'步行','TRAIN':'铁路','METRO':'地铁','BUS':'巴士','TAXI':'出租车','FLIGHT':'飞机',
             'DRIVING':'驾车','TRANSIT':'公共交通','UNAVAILABLE':'方式待核验','UNKNOWN':'方式待核验'}.get(str(value),public_status(value))
 
 def public_cost(value,currency,unknown=False):
     if value is None:return '未核实'
     if value==0 and unknown:return '尚无可计入的小计；其他费用未核实'
     return f'{currency} {value:,.2f}' if isinstance(value,(int,float)) else public_status(value)
+
+def public_category(value):
+    return {'transport':'交通','transit':'交通','accommodation':'住宿','hotel':'住宿','flight':'机票','intercity_rail':'城际铁路',
+        'airport_transfer':'机场接驳','station_transfer':'跨站接驳','charter_transfer':'包车/拼车','rental_car':'租车',
+        'attractions':'景点','food':'餐饮','shopping':'购物','internet':'网络','insurance':'保险',
+        'visa_related':'签证相关','misc':'杂项','emergency':'备用金'}.get(str(value),str(value))
+
+def add_photo_references(doc,attraction,data):
+    from image_pipeline import attraction_id
+    identifier=attraction_id(attraction)
+    refs=[r for r in data.get('photo_references',[]) if r.get('attraction_id')==identifier and r.get('page_status')=='ACCESSIBLE'][:3]
+    verified=any(r.get('photo_match')=='VERIFIED' for r in refs)
+    doc.add_paragraph('真实照片参考：未取得可直接嵌入的授权照片。'+('可打开以下原页看实拍；本手册不复制其图片。' if verified else '暂无已核实的景点照片来源。'))
+    for ref in refs:
+        p=doc.add_paragraph();add_hyperlink(p,ref['title'],ref['url'])
+        p.add_run(' · '+str(ref.get('platform',''))+' · '+('对应景点图片已在原页确认' if ref.get('photo_match')=='VERIFIED' else '相关页面可访问，但照片匹配尚未确认')+' · '+str(ref.get('checked_at',''))[:10])
 
 
 def add_hyperlink(paragraph,label,url):
@@ -220,6 +243,25 @@ def numeric_scenarios(data):
 
 
 def add_budget_cards(doc,data,technical=False):
+    calculations=data.get('budget_math') or {}
+    if calculations:
+        doc.add_paragraph('三档规划假设：以下按同一份分项计算，非目标日期报价，也不证明预算可行。缺报价的实际总价仍待核验。')
+        keys=list(calculations)
+        table=doc.add_table(rows=1,cols=1+len(keys))
+        for cell,label in zip(table.rows[0].cells,['项目']+[{'low':'经济型参考','recommended':'推荐型参考','comfortable':'舒适型参考'}.get(k,k) for k in keys]):cell.text=label
+        categories=list(dict.fromkeys(c for s in calculations.values() for c in s['components']))
+        for category in categories:
+            row=table.add_row().cells;row[0].text=public_category(category)
+            for col,key in enumerate(keys,1):
+                spec=calculations[key];row[col].text=f"{spec['currency']} {spec['components'][category]:,.2f}" if category in spec['components'] else '未列入'
+        format_table(table,header_rows=1)
+        table=doc.add_table(rows=1,cols=4)
+        for cell,label in zip(table.rows[0].cells,('方案','全团合计','人均合计','超出预算上限')):cell.text=label
+        for key,spec in calculations.items():
+            label={'low':'低预算','recommended':'推荐','comfortable':'舒适'}.get(key,key)
+            row=table.add_row().cells;row[0].text=label+' 合计';row[1].text=f"{spec['currency']} {spec['total']:,.2f}"
+            row[2].text=f"{spec['currency']} {spec['per_person']:,.2f}";row[3].text=f"{spec['currency']} {spec['budget_gap']:,.2f}"
+        format_table(table,header_rows=1)
     closure=data.get('budget_reconciliation')
     if isinstance(closure,dict):
         doc.add_paragraph('成本核算：已知小计不等于完整旅行总价；预算额度不计入成本。')
@@ -237,7 +279,7 @@ def add_budget_cards(doc,data,technical=False):
             value=closure.get(key); row[col].text='仍有未知成本，暂不能计算' if value is None else f"{closure.get('currency','')} {value:,.2f}"
         format_table(table,header_rows=1)
         categories={'flight':'机票','hotel':'住宿','transit':'交通','food':'餐饮','attractions':'景点','internet':'网络','insurance':'保险','visa_related':'签证相关','misc':'杂项','emergency':'备用金'}
-        unknown='、'.join(categories.get(c,c) for c in closure.get('unknown_cost_categories',[]))
+        unknown='、'.join(categories.get(c,public_category(c)) for c in closure.get('unknown_cost_categories',[]))
         if technical:doc.add_paragraph('预算可行性：'+public_status(closure.get('feasibility'))+'；未知项目：'+unknown)
         elif unknown:doc.add_paragraph('尚未核实完整价格的项目：'+unknown+'。取得这些报价后才能判断是否在预算内。')
         known_rows=[item for item in closure.get('rows',[]) if technical or item.get('amount') is not None]
@@ -301,6 +343,12 @@ def picture_for_attraction(doc,cell,attraction,image,root,test_mode,image_root=N
     if not any(base==local or base in local.parents for base in allowed_roots) or not local.is_file(): return False
     from image_pipeline import attraction_id,LICENSE
     if not LICENSE.fullmatch(str(image.get('license',''))) or not image.get('page_url'):return False
+    if not test_mode:
+        proof=image.get('source_verification') or {}
+        if not (image.get('license_verified') is True and image.get('identity_verified') is True and
+                proof.get('status')=='VERIFIED' and proof.get('page_url')==image.get('page_url') and proof.get('checked_at') and
+                proof.get('redistribution_license')==image.get('license') and (image.get('author') or image.get('artist')) and
+                image.get('sha256')==hashlib.sha256(local.read_bytes()).hexdigest()):return False
     if image.get('attraction_id') and image['attraction_id']!=attraction_id(attraction):return False
     if not image.get('attraction_id') and image.get('attraction')!=attraction.get('name'):return False
     from PIL import Image
@@ -314,7 +362,7 @@ def picture_for_attraction(doc,cell,attraction,image,root,test_mode,image_root=N
         shape._inline.docPr.set('descr',attraction_id(attraction)+' | '+str(attraction.get('name')))
     paragraph.alignment=1
     caption=cell.add_paragraph(); caption.alignment=1; caption.paragraph_format.keep_together=True
-    caption.add_run(f"{image.get('caption') or attraction.get('name')} · {html.unescape(str(image.get('author') or image.get('artist') or '作者未标明'))} · {image['license']} · ")
+    caption.add_run(f"{image.get('caption') or attraction.get('name')} · 地点参考照片，非旅行当日实况 · {html.unescape(str(image.get('author') or image.get('artist') or '作者未标明'))} · {image['license']} · ")
     add_hyperlink(caption,'图片来源',image['page_url'])
     license_url=image.get('license_url')
     if not license_url:
@@ -339,16 +387,18 @@ def add_attraction_card(doc,attraction,image,root,test_mode,bookmark_id,image_ro
             ('不适合情形','not_recommended_when'),('建议停留','estimated_visit_duration'),('价格参考','ticket_price'),
             ('开放时间','opening_hours'),('预约提醒','reservation_required'),('适合时段','best_time_of_day'),('交通','transport_info'),('不喜欢时的替代','alternative'))
     for label,key in fields:
+        if key=='why_visit' and attraction.get(key)==attraction.get('tagline'):continue
         if attraction.get(key) is not None:
             p=doc.add_paragraph(); p.paragraph_format.keep_together=True; r=p.add_run(label+'：'); r.bold=True
             value=public_fact(attraction[key])
             if attraction.get('research_audited') and key in {'ticket_price','opening_hours','reservation_required','transport_info'}:
                 e=attraction.get('field_evidence',{}).get(key)
-                value=(public_fact(e['value'])+'（已读取来源中的当前信息；2027运营需复核）') if e else '尚未取得本次字段证据，出发前需确认'
+                value=(public_fact(e['value'])+'（当前来源参考，目标日期复核）') if e else '尚未取得本次字段证据，出发前需确认'
             p.add_run(value)
     if attraction.get('source_url'):
         p=doc.add_paragraph(); p.paragraph_format.keep_together=True
-        p.add_run(f"信息来源 · 查询于 {attraction.get('source_checked_at','未记录')} · ")
+        at=attraction.get('source_checked_at')
+        p.add_run(('来源记录日期 '+public_text(at)+'，出发前复核 · ') if at else '来源尚无核验时间，信息按未核验处理 · ')
         add_hyperlink(p,'打开来源',attraction['source_url'])
 
 
@@ -364,7 +414,8 @@ def day_heading(index,date):
     text=str(date or '').strip()
     if not text or re.match(r'^Day\s*\d+\b',text,re.I):
         return f'Day {index}（日期未定）'
-    return f'Day {index} · {text}'
+    try:return f'Day {index} · {text} {weekday(text)}'
+    except ValueError:return f'Day {index} · {text}'
 
 
 def route_summary(day,technical=False):
@@ -425,8 +476,10 @@ def add_route_table(doc,day,technical=False):
 
 
 def add_toc(doc,sections):
+    p=doc.add_paragraph()
     for label,anchor in sections:
-        p=doc.add_paragraph(style='List Number'); add_internal_link(p,label,'section_'+anchor)
+        if p.text:p.add_run('  ·  ')
+        add_internal_link(p,label,'section_'+anchor)
 
 
 def order_handbook_sections(doc,sections):
@@ -444,9 +497,24 @@ def order_handbook_sections(doc,sections):
         body.insert(len(body)-1 if body[-1].tag==qn('w:sectPr') else len(body),child)
 
 
+def daily_rows(day,compact=False):
+    """Display known hotel/terminal actions without changing canonical activity projection."""
+    nodes=day.get('execution_graph',{}).get('nodes',[])
+    if compact and nodes:
+        relevant=[n for n in nodes if n.get('role') in {'ACTIVITY','MEAL','REST'} or
+            (n.get('role') in {'HOTEL','AIRPORT','STATION','PORT'} and n.get('location_status')=='RESOLVED')]
+        return [{'time':n.get('time') or '随当天进度','activity':n.get('place',''),'note':n.get('note') or n.get('notes') or '具体时刻与条件待确认'} for n in relevant]
+    return day.get('activities') or [{'time':n.get('time') or '随当天进度','activity':n.get('place',''),'note':n.get('note') or n.get('notes') or '规划建议；实际时刻和接驳待核'} for n in nodes]
+
+
 def main():
     parser=argparse.ArgumentParser(); parser.add_argument('--input',required=True); parser.add_argument('--output',default='outputs/Smart_Travel_Plan.docx'); parser.add_argument('--image-root'); parser.add_argument('--test-synthetic',action='store_true'); parser.add_argument('--technical-debug-report',action='store_true'); args=parser.parse_args()
-    input_path=Path(args.input).resolve(); output=Path(args.output).resolve(); data=apply_readiness(sanitize_route_placeholders(json.loads(input_path.read_text(encoding='utf-8'))))
+    input_path=Path(args.input).resolve(); output=Path(args.output).resolve()
+    data=apply_delivery_checks(json.loads(input_path.read_text(encoding='utf-8')))
+    if data['delivery_validation']['errors']:
+        print(json.dumps({'status':'blocked','errors':data['delivery_validation']['errors']},ensure_ascii=False));raise SystemExit(2)
+    data=apply_readiness(sanitize_route_placeholders(data))
+    data['planning_delivery']=planning_delivery_gate(data)
     root=Path(__file__).resolve().parents[1]
     test_mode=args.test_synthetic
     if test_mode:
@@ -454,6 +522,8 @@ def main():
         if not any(base==input_path or base in input_path.parents for base in allowed_inputs): raise SystemExit('--test-synthetic input must live under tests/fixtures or acceptance/fixtures')
         if data.get('mode')!='TEST_SYNTHETIC': raise SystemExit('--test-synthetic requires mode=TEST_SYNTHETIC in the input plan')
     if data.get('mode')=='TEST_SYNTHETIC' and not test_mode: raise SystemExit('Test-only profile cannot enter the normal user document flow')
+    if not test_mode and not data['planning_delivery']['can_generate']:
+        print(json.dumps({'status':'BLOCKED','errors':data['planning_delivery']['errors']},ensure_ascii=False));raise SystemExit(2)
     state=trip_readiness(data)
     if not state['ready_for_formal_plan']:
         print(json.dumps({'status':'blocked','reason':'Incomplete trip profile: continue destination research and ask the user; do not create a formal itinerary or handbook.','trip_readiness':state},ensure_ascii=False,indent=2)); raise SystemExit(2)
@@ -466,6 +536,8 @@ def main():
         from docx.shared import Inches,Pt,RGBColor
     except ImportError as exc: raise SystemExit('DOCX support unavailable. Install the pinned optional dependency from requirements-docx.txt') from exc
     doc=Document(); section=doc.sections[0]
+    doc.core_properties.identifier='stp-standard:'+hashlib.sha256(input_path.read_bytes()).hexdigest()
+    doc.core_properties.creator='Smart Travel Planner standard generator'
     section.top_margin=section.bottom_margin=Inches(.62); section.left_margin=section.right_margin=Inches(.72); section.different_first_page_header_footer=True
     styles=doc.styles; styles['Normal'].font.name='Aptos'; styles['Normal'].font.size=Pt(10.5)
     from docx.oxml.ns import qn
@@ -473,14 +545,34 @@ def main():
     for name in ('Title','Heading 1','Heading 2','Heading 3'):
         styles[name].font.name='Aptos Display'; styles[name].font.color.rgb=RGBColor(0,0,0); styles[name].paragraph_format.keep_with_next=True; styles[name].paragraph_format.keep_together=True
         styles[name].element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'),'Microsoft YaHei')
-    h=doc.add_paragraph(style='Title'); h.alignment=1; h.paragraph_format.space_before=Pt(68); h.add_run(str(data.get('title') or '旅行计划'))
+    compact=len(data.get('days',[]))<=4 and not args.technical_debug_report
+    h=doc.add_paragraph(style='Title'); h.alignment=1; h.paragraph_format.space_before=Pt(24 if compact else 50); h.add_run(str(data.get('title') or '旅行计划'))
     p=doc.add_paragraph(); p.alignment=1; p.add_run(str(data.get('subtitle') or '旅行手册'))
     p=doc.add_paragraph(); p.alignment=1; p.add_run(str(data.get('summary') or '按已确认的旅行条件整理。'))
-    doc.add_page_break()
+    if data.get('planning_note'):doc.add_paragraph(public_text(data['planning_note']))
+    if data.get('weather_summary'):doc.add_paragraph('天气参考：'+public_text(data['weather_summary']))
+    profile=data.get('trip_profile',{})
+    transport_scope='往返铁路费用见预算说明' if profile.get('intercity_mode')=='TRAIN' else ('包含' if profile.get('airfare_included') else '不含')+'往返机票'
+    doc.add_paragraph(f"{profile.get('destination','')} · {profile.get('start_date','')} 至 {profile.get('end_date','')} · {profile.get('traveler_count','')}人 · {profile.get('budget_currency','')} {profile.get('budget_amount','')} / {'每人' if profile.get('budget_scope')=='PER_PERSON' else '全团'} · {transport_scope}")
+    if data['planning_delivery']['status']!='READY':
+        doc.add_paragraph('初步规划手册：尚不具备预订条件。目标日期往返交通、酒店及运营资料按待确认项处理；生成本手册不表示预算已验证或行程可直接预订。')
+    if data.get('attractions') and not data.get('images'):
+        doc.add_paragraph('本版未嵌入景点照片：尚未取得可核验的图片授权或来源不可访问。未使用授权不明的商业图片。')
+    from trip_entities import selected_attractions
+    from image_pipeline import attraction_id
+    cover_attractions=selected_attractions(data)
+    if cover_attractions:
+        first=cover_attractions[0]
+        cover_image=next((x for x in data.get('images',[]) if x.get('attraction_id')==attraction_id(first)),None)
+        if cover_image:add_hyperlink(doc.add_paragraph(),'真实照片预览：'+first['name']+'（正文已嵌入）',cover_image['page_url'])
+        else:add_photo_references(doc,first,data)
+    if not compact:doc.add_page_break()
     sections=[('旅行摘要','summary'),('旅行画像','profile'),('专属体验亮点','experiences'),('每日路线','daily'),('核心景点','attractions'),('特色活动专题','events'),('住宿区域','lodging'),('交通路线','transport'),('餐饮候选与排队备选','restaurants'),('预算方案','budget'),('省钱与天气备选','alternatives'),('本次主动舍弃','omitted'),('关键决策','decisions'),('计划修订记录','revisions'),('预约与行前清单','checklist'),('当前旅行准备度','readiness'),('来源索引','sources')]
-    sections=[s for s in sections if s[1] not in {'attractions','omitted'} or data.get('attractions' if s[1]=='attractions' else 'omitted_attractions')]
+    sections=[s for s in sections if s[1] not in {'attractions','omitted'} or (cover_attractions if s[1]=='attractions' else data.get('omitted_attractions'))]
     sections=[s for s in sections if s[1] not in {'experiences','events'} or data.get('experience_highlights' if s[1]=='experiences' else 'seasonal_events')]
-    doc.add_heading('目录',1); add_toc(doc,sections); doc.add_page_break()
+    sections=[s for s in sections if s[1]!='restaurants' or data.get('restaurant_candidates') or data.get('food_recommendations')]
+    doc.add_heading('目录',1); add_toc(doc,sections)
+    if not compact:doc.add_page_break()
     bookmarks={name:index+1 for index,(_,name) in enumerate(sections)}
     add_section_heading(doc,'当前旅行准备度',1,'section_readiness',bookmarks['readiness'])
     readiness=data.get('readiness',{})
@@ -540,7 +632,6 @@ def main():
             doc.add_paragraph('本手册提供的是规划结果；酒店库存、目标日期航班或交通等关键动态信息尚未全部核验，不能视为已经可预订。',style='Intense Quote')
     else:
         doc.add_paragraph('这份手册提供旅行建议，没有代为订票或订房。请先确认往返交通、具体酒店及住宿总价，再安排需要预约的体验。')
-        doc.add_paragraph('未取得可靠资料的交通时间和费用不填数值；交通段的完整时间、站口与换乘请在住宿和机场确定后复核。临近出发再确认营业时间、天气和步行负荷。')
     add_section_heading(doc,'旅行摘要',1,'section_summary',bookmarks['summary']); doc.add_paragraph(str(data.get('summary') or '按已确认的旅行条件整理。'))
     add_section_heading(doc,'旅行画像',1,'section_profile',bookmarks['profile'])
     profile=data.get('trip_profile') or data.get('profile',{})
@@ -556,6 +647,7 @@ def main():
             'interests':'兴趣','food_preferences':'餐饮偏好','must_visit':'必去','avoid_list':'避开','visa_constraints':'入境条件'}
         for key,label in profile_labels.items():
             if key not in profile: continue
+            if compact and key not in {'destination','travel_window','traveler_count','origin','budget_amount','budget_scope','airfare_included','intercity_mode','pace','sleep_schedule','walking_tolerance_steps','interests'}:continue
             if key=='airfare_included' and profile.get('intercity_mode')=='TRAIN':continue
             value=profile[key]
             if key=='budget_scope': value={'PER_PERSON':'每人','PER_PARTY':'全团'}.get(value,value)
@@ -567,7 +659,9 @@ def main():
             row=table.add_row().cells; row[0].text=label; row[1].text=str(value)
         format_table(table)
     add_section_heading(doc,'本次行程的关键决策',1,'section_decisions',bookmarks['decisions'])
-    for item in data.get('key_decisions',[]): doc.add_paragraph(str(item),style='List Number')
+    for index,item in enumerate(data.get('key_decisions',[]),1):
+        text=public_text(item)
+        if text:doc.add_paragraph(f'{index}. {text}')
     for item in data.get('decision_ledger',[]):
         if not isinstance(item,dict): continue
         doc.add_heading(str(item.get('category','Agent 决策')),2)
@@ -593,13 +687,19 @@ def main():
     revisions=[{**rev,'old_decision':legacy_labels.get(rev.get('old_decision'),rev.get('old_decision')),
                 'new_decision':legacy_labels.get(rev.get('new_decision'),rev.get('new_decision'))} for rev in revisions]
     for rev in data.get('decision_revision_ledger',[]):
-        if rev.get('trigger')!='RESEARCH_DRIVEN_DECISION_CHANGE':continue
+        if rev.get('trigger')!='RESEARCH_DRIVEN_DECISION_CHANGE':
+            if isinstance(rev.get('old_decision'),str) and isinstance(rev.get('new_decision'),str):revisions.append(rev)
+            continue
         old=rev['old_decision'];new=rev['new_decision'];route=new.get('route',new)
         revisions.append({'old_decision':mode_labels.get(old.get('mode'),old.get('place','原候选')),
             'new_decision':mode_labels.get(route.get('mode'),new.get('place','新候选')),
             'trigger':'新网页证据改变路线比较','reason':'比较已知步行负荷、换乘与未知环节后暂选；全天步行与连接时间仍待核验。',
             'evidence':['官方访问指引与旅游局路线参考，见来源索引']})
-    if revisions:
+    if revisions and compact:
+        for item in revisions:
+            doc.add_paragraph('原安排：'+str(item.get('old_decision',''))+'。现在建议：'+str(item.get('new_decision',''))+'。')
+            doc.add_paragraph('为什么调整：'+str(item.get('reason','')))
+    elif revisions:
         table=doc.add_table(rows=1,cols=5); table.style='Light Shading Accent 1'
         for cell,label in zip(table.rows[0].cells,('原决定','新决定','触发冲突','改变原因','证据/影响')): cell.text=label
         for item in revisions:
@@ -621,13 +721,17 @@ def main():
         add_section_heading(doc,'特色活动专题',1,'section_events',bookmarks['events'])
         for event in data['seasonal_events']:
             doc.add_heading(str(event.get('name','季节活动')),2)
-            announced=event.get('status')=='OFFICIALLY_ANNOUNCED' and event.get('official_source_url') and event.get('date')
+            announced=event_confirmed(event)
             doc.add_paragraph('日期：'+(str(event['date'])+'（官方公告参考，出发前复核）' if announced else '目标年份日期未核实；仅作季节候选，不保证参加，不作为出票依据。'))
             doc.add_paragraph(str(event.get('experience') or ''))
             doc.add_paragraph('替代：'+str(event.get('alternative') or '保留同区域自由活动，待官宣后再移动日程。'))
             if event.get('source_url'):add_hyperlink(doc.add_paragraph(),'活动官方来源',event['source_url'])
     add_section_heading(doc,'预算方案',1,'section_budget',bookmarks['budget'])
-    doc.add_paragraph('币种：CNY 人民币；JPY 日元。用户预算是上限，不是必须花完的金额；报价、当前参考、规划估算与未知费用分别列示。')
+    currencies={profile.get('budget_currency'),data.get('budget',{}).get('currency')}- {None}
+    scope=('本次'+('包含' if profile.get('intercity_fare_included') is True else '不含' if profile.get('intercity_fare_included') is False else '需确认是否包含')+'往返铁路费用。') if profile.get('intercity_mode')=='TRAIN' else ('本次不含往返机票。' if profile.get('airfare_included') is False else '本次预算包含往返机票。')
+    doc.add_paragraph('预算币种：'+'、'.join(sorted(currencies))+'。用户预算是上限，不是必须花完的金额；报价、当前参考、规划假设与未知费用分别列示。'+scope)
+    coverage=data.get('required_cost_coverage',{})
+    if coverage.get('unknown_required_edges'):doc.add_paragraph('完整费用仍未核实：还有必需交通段费用未知。下方金额是支出预留合计，不能把未知项当成零元，也不能据此判断可以直接出发。')
     add_budget_cards(doc,data,technical=args.technical_debug_report)
     references=data.get('reference_budget',{}).get('reference_ledger',[])
     if references:
@@ -648,7 +752,7 @@ def main():
             else:doc.add_paragraph(f"{labels.get(key,'预算情景')}：{scenario['currency']} {scenario['total']:,.2f} / 全团；人均 {scenario['per_person']:,.2f}。按明确数量假设与所列价格参考计算，非目标日期可订报价；未列项目与备用金另计。")
     budget=data.get('budget',{})
     budget_status=data.get('budget_status')
-    if isinstance(budget_status,dict):
+    if isinstance(budget_status,dict) and args.technical_debug_report:
         table=doc.add_table(rows=0,cols=2); table.style='Light Shading Accent 1'
         labels=(('user_budget_limit','用户预算上限'),('current_verified_cost','已核验成本小计'),('current_estimated_cost','参考/估算成本小计'),('current_plan_cost','当前方案总成本'),('lowest_found_cost','已查到的最低成本'),('realistic_minimum_cost','最低合理成本'),('budget_gap','预算差额'),('feasibility','预算可行性'),('evidence_status','费用资料完成度'))
         for key,label in labels:
@@ -670,6 +774,15 @@ def main():
             row[3].text=str(area.get('coverage','')); row[4].text=f"{area.get('pros','')}；{area.get('cons','')}"
         format_table(table,header_rows=1)
     if data.get('lodging_recommendation'): doc.add_paragraph(str(data['lodging_recommendation']))
+    if data.get('hotel_candidates'):
+        table=doc.add_table(rows=1,cols=3)
+        for cell,label in zip(table.rows[0].cells,('酒店与定位','为什么考虑 / 代价','价格口径与来源')):cell.text=label
+        for hotel in data['hotel_candidates'][:3]:
+            row=table.add_row().cells;row[0].text=hotel['name']+('（优先候选）' if hotel.get('selected') else '（备选）')+'\n'+hotel.get('address','')
+            row[1].text=str(hotel.get('why_recommended') or hotel.get('route_fit_reason') or '资料候选')+'\n'+str(hotel.get('drawbacks') or '未取得足够独立评价，卫生与噪声需预订前核实。')
+            row[2].text=str(hotel.get('price_reference') or '未取得目标日期价格；先比较房型、含税与退改总价。')
+            if hotel.get('source_url'):add_hyperlink(row[2].paragraphs[0],'酒店来源',hotel['source_url'])
+        format_table(table,header_rows=1)
     hotels=[h for h in data.get('hotel_availability',[]) if args.technical_debug_report or h.get('hotel_name')]
     if not args.technical_debug_report:
         for hotel in hotels:
@@ -722,30 +835,42 @@ def main():
             row[4].text=public_status(flight.get('status','UNAVAILABLE'))
             if flight.get('source'): add_hyperlink(row[4].paragraphs[0],'来源',flight['source'])
         format_table(table,header_rows=1)
-    if not flights and not args.technical_debug_report:
+    if not flights and not args.technical_debug_report and not compact:
         doc.add_paragraph('往返接驳：实际机场和航班确定后，再选择进城与返程交通；到达和离开当天留出手续、行李与换乘时间。当前不提供未经核实的时刻或票价。')
     if data.get('flight_ranking') and args.technical_debug_report:
         doc.add_paragraph('航班比较状态：'+public_status(data['flight_ranking'].get('status','DATA_PENDING'))+'；默认比较整体性价比，但目标日期报价不足时不选具体航班。')
     from image_pipeline import attraction_id
     images={item.get('attraction_id') or item.get('attraction'):item for item in data.get('images',[]) if isinstance(item,dict)}
-    attractions=data.get('attractions',[])
+    from trip_entities import selected_attractions
+    attractions=selected_attractions(data)
     if attractions:
         add_section_heading(doc,'核心景点',1,'section_attractions',bookmarks['attractions'])
-        for index,item in enumerate(attractions,1): add_attraction_card(doc,item,images.get(attraction_id(item)) or images.get(item.get('name')),root,test_mode,index,args.image_root)
-    add_section_heading(doc,'餐饮候选与排队备选',1,'section_restaurants',bookmarks['restaurants'])
+        for index,item in enumerate(attractions,1):
+            image=images.get(attraction_id(item)) or images.get(item.get('name'))
+            add_attraction_card(doc,item,image,root,test_mode,index,args.image_root)
+            if not image:add_photo_references(doc,item,data)
+    if 'restaurants' in bookmarks:
+        add_section_heading(doc,'餐饮候选与排队备选',1,'section_restaurants',bookmarks['restaurants'])
+        if not data.get('restaurant_candidates'):
+            for value in data.get('food_recommendations',[]):doc.add_paragraph(str(value))
     if data.get('restaurant_candidates'):
         doc.add_paragraph('以下为带来源的当前参考；个别来源仅取得搜索摘要，详见来源说明。菜单起价和平台人均不是全餐报价；预约、坐席、排队和目标日期营业仍按标注复核。')
-        for candidate in data['restaurant_candidates']:
+        candidates=data['restaurant_candidates']
+        selected=[c for c in candidates if c.get('selected') is True]
+        for candidate in selected or candidates[:3]:
             if not candidate.get('name') or not candidate.get('address'): continue
             doc.add_heading(str(candidate['name']),2)
             doc.add_paragraph('地址：'+str(candidate['address'])+'；餐饮类型：'+public_fact(candidate.get('cuisine','待核验')))
             if candidate.get('cuisine')=='たこ焼': doc.add_paragraph('这是章鱼烧小吃；若想吃完整一餐，优先使用下列拉面备选。坐席与排队情况仍待核实。')
             doc.add_paragraph('营业：'+str(candidate.get('opening_hours','待核验'))+'；价格参考：'+str(candidate.get('price_reference','尚未获取')))
             doc.add_paragraph('预约：'+str(candidate.get('reservation','未取得明确预约条件')))
+            if candidate.get('why_recommended'):doc.add_paragraph('为什么选：'+str(candidate['why_recommended']))
+            if candidate.get('drawbacks'):doc.add_paragraph('注意：'+str(candidate['drawbacks']))
             if candidate.get('backup'):
                 doc.add_paragraph('备选：'+str(candidate['backup'])+'；地址：'+str(candidate.get('backup_address','待核验'))+'；营业：'+str(candidate.get('backup_opening','待核验'))+'；餐饮类型：'+public_fact(candidate.get('backup_cuisine','待核验')))
                 if candidate.get('backup_price_reference'): doc.add_paragraph('备选菜单参考：'+candidate['backup_price_reference']+'；连锁起价，具体门店可能不同。')
             sources={e['source_url'] for e in candidate.get('field_evidence',{}).values()}
+            if candidate.get('source_url'):sources.add(candidate['source_url'])
             for url in sorted(sources): add_hyperlink(doc.add_paragraph(),'打开餐厅来源',url)
     add_section_heading(doc,'每日路线安排',1,'section_daily',bookmarks['daily'])
     for index,day in enumerate(data.get('days',[]),1):
@@ -756,7 +881,7 @@ def main():
             doc.add_paragraph('建议出发：'+str(day.get('departure_suggestion') or (departure+'（规划参考，不为黄金时段自行提前）' if day.get('day_type') not in {'ARRIVAL','DEPARTURE'} else '随核验后的目标日期往返交通安排')))
             meal_nodes=[n for n in day.get('execution_graph',{}).get('nodes',[]) if n.get('role')=='MEAL']
             for n in meal_nodes:
-                c=next((c for c in data.get('restaurant_candidates',[]) if c.get('place_id')==n['place_id']),{})
+                c=next((c for c in data.get('restaurant_candidates',[]) if (c.get('id') or c.get('place_id'))==n['place_id']),{})
                 doc.add_paragraph('餐饮主选：'+str(n['place'])+'；用餐时间：'+str(n.get('time') or '随当天进度调整')+'；营业参考：'+str(c.get('opening_hours') or '待核验')+'；单项菜单参考：'+str(c.get('price_reference') or '未取得'))
                 if c.get('backup'):doc.add_paragraph('排队备选：'+str(c['backup'])+'。备选不作为必须额外到访的站点。')
             walk_limit=data.get('trip_profile',{}).get('walking_tolerance_steps')
@@ -780,10 +905,15 @@ def main():
         p.add_run('预计消费：').bold=True; p.add_run(str(day.get('estimated_cost','估算')))
         if day.get('route_chain') or day.get('route_summary'):
             p=doc.add_paragraph(); p.add_run('路线建议：').bold=True; p.add_run(route_summary(day,technical=args.technical_debug_report))
-        add_route_table(doc,day,technical=args.technical_debug_report)
+        if compact:
+            for note in day.get('route_notes',[])[:3]:doc.add_paragraph(str(note))
+        else:add_route_table(doc,day,technical=args.technical_debug_report)
+        night=day.get('overnight_anchor')
+        if night:doc.add_paragraph('当晚住宿候选：'+public_text(night.get('place'))+'；具体房型、营业和预订条件按来源核实，不代表已订到。')
+        elif profile.get('hotel'):doc.add_paragraph('住宿与行李：'+public_text(day.get('lodging_note') or profile['hotel']))
         table=doc.add_table(rows=1,cols=3); table.style='Light Shading Accent 1'
         for cell,label in zip(table.rows[0].cells,('时间','活动','安排提示/费用')): cell.text=label
-        activities=day.get('activities') or [{'time':n.get('time','随当天进度'),'activity':n.get('place',''),'note':n.get('note') or n.get('notes','规划建议；实际时刻和接驳待核')} for n in day.get('execution_graph',{}).get('nodes',[])]
+        activities=daily_rows(day,compact)
         for activity in activities:
             row=table.add_row().cells; row[0].text=str(activity.get('time') or '随当天进度'); row[1].text=public_place(activity.get('activity') or activity.get('place') or ''); row[2].text=str(activity.get('note') or activity.get('notes') or '规划建议；具体条件见景点和交通说明')
         if not activities and day.get('day_type') in {'ARRIVAL','DEPARTURE'}:
@@ -791,6 +921,12 @@ def main():
             row[1].text='往返交通与接驳，见上述移动表'
             row[2].text='具体时刻、办理手续和缓冲时间尚未取得；不安排额外景点。'
         format_table(table,header_rows=1)
+        if compact:
+            for n in day.get('execution_graph',{}).get('nodes',[]):
+                if n.get('role')!='MEAL':continue
+                candidate=next((c for c in data.get('restaurant_candidates',[]) if c.get('id')==n.get('place_id') or c.get('place_id')==n.get('place_id')),None)
+                if candidate:
+                    doc.add_paragraph('用餐：'+candidate['name']+' · '+str(candidate.get('price_reference') or '费用未核实')+' · '+str(candidate.get('why_recommended') or '顺路候选'))
         if day.get('plan_b_route'):
             mapped='；'.join(str(stop.get('alternative') or stop.get('name') or '') for stop in day['plan_b_route'] if isinstance(stop,dict))
             doc.add_paragraph('天气/变更备选：'+(mapped or '优先替换同一区域的户外活动，保留当天路线结构。'))
@@ -800,23 +936,37 @@ def main():
     if omitted:
         add_section_heading(doc,'本次主动舍弃',1,'section_omitted',bookmarks['omitted'])
         for item in omitted:
-            if isinstance(item,dict): doc.add_paragraph(f"{item.get('name','候选景点')}：{item.get('why_not','不符合本次旅行重点')} 适合：{item.get('best_for','')}",style='List Bullet')
+            if isinstance(item,dict):
+                reason=item.get('why_not') or item.get('reason') or '不符合本次旅行重点'
+                suffix='；适合：'+public_text(item['best_for']) if item.get('best_for') else ''
+                doc.add_paragraph(public_text(item.get('name','候选景点'))+'：'+public_text(reason)+suffix,style='List Bullet')
             else: doc.add_paragraph(str(item),style='List Bullet')
     add_section_heading(doc,'省钱策略与 Plan B',1,'section_alternatives',bookmarks['alternatives'])
+    for alternative in data.get('conditional_alternatives',[])[:3]:
+        text=public_text(alternative)
+        if text:doc.add_paragraph(text,style='List Bullet')
     for field in ('savings','food_recommendations','risks'):
         values=data.get(field,[])
         if isinstance(values,str): values=[values]
-        for value in values: doc.add_paragraph(str(value),style='List Bullet')
+        for value in values:
+            text=public_text(value)
+            if text:doc.add_paragraph(text,style='List Bullet')
     add_section_heading(doc,'预约与行前清单',1,'section_checklist',bookmarks['checklist'])
+    priority=data.get('verification_priority',{})
+    if priority.get('status')=='DEPARTURE_SOON':
+        doc.add_paragraph(f"距参考出发日期还有 {priority['days_to_departure']} 天，请先完成以下关键核对；未核实不代表已可执行。")
+        for action in priority['actions']:doc.add_paragraph(str(action['priority'])+'. '+public_text(action['item'])+'：'+public_text(action['note']))
     for field in ('bookings','checklist'):
         values=data.get(field,[])
         if isinstance(values,str): values=[values]
-        for value in values: doc.add_paragraph(str(value),style='List Bullet')
+        for value in values:
+            text=public_text(value)
+            if text:doc.add_paragraph(text,style='List Bullet')
     add_section_heading(doc,'来源索引',1,'section_sources',bookmarks['sources'])
     table=doc.add_table(rows=1,cols=3); table.style='Light Shading Accent 1'
     for cell,label in zip(table.rows[0].cells,('来源','链接','核验时间')): cell.text=label
     for source in public_sources(data):
-        row=table.add_row().cells; row[0].text=source['title']; row[1].text=''; add_hyperlink(row[1].paragraphs[0],'打开来源',source['url']); row[2].text=source['checked_at'] or '未记录'
+        row=table.add_row().cells; row[0].text=source['title']; row[1].text=''; add_hyperlink(row[1].paragraphs[0],'打开来源',source['url']); row[2].text=source['checked_at'] or '尚无核验时间，作为待确认来源'
     format_table(table,header_rows=1)
     footer=section.footer.paragraphs[0]; footer.alignment=2; footer.add_run('第 ')
     from docx.oxml import OxmlElement

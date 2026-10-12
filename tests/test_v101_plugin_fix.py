@@ -168,11 +168,17 @@ class ImageContracts(unittest.TestCase):
         first=collect_images(plan,service=Service());plan['image_pipeline']=first
         second=collect_images(plan,selections=[{'attraction_id':'place','file_title':'File:Sample City Temple.jpg'},
             {'attraction_id':'place','file_title':'File:Sample City Temple exterior.jpg'}],service=Service())
-        self.assertEqual(len(second['attempts']),4)
+        self.assertEqual(len(second['attempts']),2)
         plan['image_pipeline']=second
         final=collect_images(plan,selections=[{'attraction_id':'place','file_title':'File:Another.jpg'}],service=Service())
-        self.assertEqual(len(final['attempts']),4)
-        self.assertIn('exhausted',final['requirements'][0]['failure_reason'])
+        self.assertEqual(len(final['attempts']),3)
+        plan['image_pipeline']=final
+        fourth=collect_images(plan,selections=[{'attraction_id':'place','file_title':'File:Fourth.jpg'}],service=Service())
+        self.assertEqual(len(fourth['attempts']),4)
+        plan['image_pipeline']=fourth
+        exhausted=collect_images(plan,selections=[{'attraction_id':'place','file_title':'File:Fifth.jpg'}],service=Service())
+        self.assertEqual(len(exhausted['attempts']),4)
+        self.assertIn('exhausted',exhausted['requirements'][0]['failure_reason'])
 
 
 class InstalledPaths(unittest.TestCase):
@@ -270,10 +276,9 @@ class InstalledPaths(unittest.TestCase):
         self.assertEqual(Path(builds[0]['command'][1]),self.plugin/'scripts/build_docx.py')
         doc=Path(report['document'])
         checked=destination/'plan-with-readiness.json'
-        r=subprocess.run([sys.executable,str(self.plugin/'scripts/validate_docx.py'),str(doc),'--plan',str(checked),
-                          *(['--require-images'] if with_image else [])],capture_output=True,text=True,encoding='utf-8')
+        r=subprocess.run([sys.executable,str(self.plugin/'scripts/validate_docx.py'),str(doc),'--plan',str(checked)],capture_output=True,text=True,encoding='utf-8')
         self.assertEqual(r.returncode,0,r.stdout+r.stderr)
-        validation=json.loads(r.stdout);self.assertEqual(validation['images'],int(with_image))
+        validation=json.loads(r.stdout);self.assertEqual(validation['images'],0)
         with zipfile.ZipFile(doc) as archive:
             document=archive.read('word/document.xml').decode('utf-8')
             styles=archive.read('word/styles.xml').decode('utf-8')
@@ -281,12 +286,12 @@ class InstalledPaths(unittest.TestCase):
             self.assertNotIn('¥3300',document)
             self.assertNotIn('AIRPORT_UNRESOLVED',document)
             if with_image:
-                self.assertTrue(any(x.startswith('word/media/') for x in archive.namelist()))
-                self.assertIn('Contract author',document);self.assertIn('CC BY-SA 4.0',document)
-                self.assertIn('place | 文化体验',document)
+                self.assertFalse(any(x.startswith('word/media/') for x in archive.namelist()))
+                self.assertTrue(report['image_validation']['rejected'])
+                self.assertIn('未嵌入景点照片',document)
         return report
 
-    def test_clean_plugin_standard_delivery_embeds_bound_image(self):self.delivery_contract(True)
+    def test_clean_plugin_unverified_image_cannot_enter_standard_delivery(self):self.delivery_contract(True)
 
     def test_clean_plugin_missing_images_delivers_text_handbook(self):self.delivery_contract(False)
 

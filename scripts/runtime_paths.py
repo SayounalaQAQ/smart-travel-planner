@@ -56,6 +56,9 @@ def doctor(root=None, standalone_dir=None):
     return {'plugin_root': str(root), 'version': json.loads((root/'plugin.json').read_text(encoding='utf-8'))['version'],
             'python': python_runtime(), 'docx': importlib.util.find_spec('docx') is not None,
             'pillow': importlib.util.find_spec('PIL') is not None,
+            'visual_discovery': {'commons':'configured_not_probed','openverse':'configured_not_probed',
+                'original_photo_pages':'supported_not_probed','host_candidates':'host_dependent',
+                'network_probe':'The delivery ledger records actual request results; configuration is not availability'},
             'script_paths': {name: str(root/'scripts'/name) for name in (
                 'analyze_trip_request.py', 'experience_discovery.py', 'image_pipeline.py', 'deliver_plan.py', 'build_docx.py', 'validate_docx.py')},
             'standalone_skill_collisions': standalone_collisions(standalone_dir),

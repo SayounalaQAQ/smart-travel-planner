@@ -1,5 +1,21 @@
 # Image policy
 
+## Alternate sources and direct photo references
+
+Select only attractions actually in the plan. Image aliases must identify the specific place: a city/bay alias cannot prove a photo depicts a specific corridor, hotel or restaurant. Historical images are not the travel date's scene.
+
+After Commons fails, accept host `image_selections` / `--image-selections` (attraction_id, page_url, image_url) and discover through anonymous Openverse. One aggregation query per attraction/run, two across the preserved ledger; inspect at most two original license candidates. Aggregation license labels alone are not permission. Flickr and other readable public originals must have ImageObject JSON-LD linking the exact image URL, creator and accepted CC0/CC BY/CC BY-SA license. This conservative policy rejects NC/ND and copyright disclaimers. Do not bypass TLS.
+
+If embedding fails, read at most three direct original photo pages per attraction/run, at most two attempts per page across resumed ledgers. Use actually discovered official galleries, photography pages or travel posts. Reject home/search links. Page relevance or og:image alone cannot prove image identity; matching image captions are required. Do not invent verification flags. The automatic standard entry builds references from these reads.
+
+Per-attraction states: EMBEDDED_LICENSED (verified pixels and metadata embedded), EXTERNAL_PHOTO_REFERENCES (accessible direct pages with corresponding photos verified, not copied), NO_VERIFIED_VISUAL_SOURCE (neither verified). Relevant dynamic pages may be linked with photo_match=UNCONFIRMED but never presented as confirmed photos.
+
+photo_references retain attraction_id/title/platform/url/checked_at/page_status/photo_match/description/copy_permission. Word provides clickable links and actual verification qualification. Unknown-copy-permission photos are not downloaded for embedding. Failure of one place does not discard other places.
+
+TLS/connection failure opens the run's Commons circuit, avoiding repeated dead-endpoint calls for every attraction. Requests have size/type/SSRF guards and 7–8 second timeout. A 90-second soft deadline stops starting another attraction; the in-flight bounded group may finish later. Preserve prior attempts. doctor.visual_discovery reports configured support, while actual request outcomes/capabilities belong in the delivery ledger. Configuration is not availability.
+
+Use official validate_docx with --plan to check real media, attribution, binding and photo-reference relationships. Require images only when obtained. Library/ZIP success is not visual review; no trusted renderer means visual UNVERIFIED.
+
 Images are part of the default formal handbook workflow. Build requirements from selected core attractions (`id`/`place_id`, name, researched image aliases and location), maximum six. Do not use a fixed Tokyo catalog. `scripts/image_pipeline.py` reuses the MCP Commons functions and server-owned provenance, verifies explicit reusable licenses and authors, matches title/description against the selected location aliases, requires at least 900px on the long side and 400px on the short side, verifies full decode and binds the record to `attraction_id`.
 
 Pipeline records include attraction_id, page/source URL, image URL, author, license, retrieved_at, local_path, integrity, dimensions and file hash. Never change licenses from caller input. Exact host-discovered `File:` titles may be provided via a selections JSON; they are not trusted metadata and are re-queried at Commons. Up to two distinct queries per attraction per run, four total across resumed Plan records, and two download candidates per query. Pass the prior Plan/image_pipeline ledger into retries; do not restart an empty ledger. Native host search is a legal discovery alternative after a structured provider failure; reserve the remaining attempts for host-discovered exact titles. Do not disable certificate validation. If transport remains unavailable, omit the photograph and retain the cause in the developer report.

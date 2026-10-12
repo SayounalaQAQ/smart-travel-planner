@@ -70,12 +70,14 @@ def route_evidence_valid(edge, nodes, *, now=None, strict=False):
     return True
 
 
-def build_execution_graph(profile, day, index=0):
+def build_execution_graph(profile, day, index=0, start_anchor=None):
     """Migrate once. Subsequently graph nodes/edges are authoritative, not projections."""
     if day.get("execution_graph"):
         return deepcopy(day["execution_graph"])
     prefix = f"day-{index + 1}"
     hotel = profile.get("hotel") or profile.get("lodging_location") or profile.get("lodging_area") or "HOTEL_UNRESOLVED"
+    starting=day.get('start_anchor') or start_anchor
+    overnight=day.get('overnight_anchor')
     hotel_resolved = bool(profile.get("hotel") and profile.get("hotel_address"))
     nodes = []
     def add(role, place, place_id, resolved=False, **extra):
@@ -89,7 +91,10 @@ def build_execution_graph(profile, day, index=0):
         for side in ('origin', 'arrival'):
             value = profile.get(side+'_'+suffix)
             add(terminal, value or terminal+'_UNRESOLVED', side+'-'+suffix, bool(value))
-    add("HOTEL", hotel, "hotel", hotel_resolved)
+    if starting:
+        add(starting.get('role','HOTEL'),starting['place'],starting['place_id'],starting.get('location_status')=='RESOLVED')
+    elif not arrival or not (day.get('itinerary_nodes') and day.get('overnight_anchor')):
+        add("HOTEL", hotel, "hotel", hotel_resolved)
     for item in day.get("itinerary_nodes", day.get("activities", [])):
         item = deepcopy(item) if isinstance(item, dict) else {"activity": str(item)}
         role = item.pop("role", "ACTIVITY")
@@ -106,7 +111,9 @@ def build_execution_graph(profile, day, index=0):
         for side in ('departure', 'return'):
             value = profile.get(side+'_'+suffix) or (profile.get('origin_'+suffix) if side=='return' else None)
             add(terminal, value or terminal+'_UNRESOLVED', side+'-'+suffix, bool(value))
-    elif nodes[-1].get("place_id") != "hotel":
+    elif overnight and nodes[-1].get('place_id')!=overnight['place_id']:
+        add(overnight.get('role','HOTEL'),overnight['place'],overnight['place_id'],overnight.get('location_status')=='RESOLVED')
+    elif not overnight and nodes[-1].get("place_id") != "hotel":
         add("HOTEL", hotel, "hotel", hotel_resolved)
     if "execution_nodes" in day:
         # Agent-authored explicit migration input may include intermediate stations.

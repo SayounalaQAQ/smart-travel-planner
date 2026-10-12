@@ -1,8 +1,16 @@
 # Smart Travel Planner 1.0.2 智能旅行规划师
 
+本候选继续修复 Commons 受限时的备用照片/真实图文链接、具名酒店餐厅与有序路线/费用映射、抵达方向与返程缓冲检查、短途 Word 的中文预算和紧凑布局。安装结构与标准入口不变；预订就绪仍要求真实目标日期数据。查看 [实际交付字段](skills/smart-travel-planner/references/practical-delivery.md) 和 [图片策略](skills/smart-travel-planner/references/image-policy.md)。
+
+**main 分支源码包含后续交付可靠性修复；v1.0.2 Release ZIP 仍是原始快照。** 插件元数据保持 1.0.2，尚未创建新的版本标签或 Release。获取最新修复请克隆/下载 main 完整源码，按本地 Marketplace 或 Skill 标准入口使用。已有宿主缓存不一定自动更新，需确认实际加载的源码；不能仅靠相同版本号判断已安装最新修复。修复包使用其自己的 SHA256，不能沿用旧 Release 校验和。参见 [交付字段](skills/smart-travel-planner/references/delivery-input.md) 与 [实际商户和路线字段](skills/smart-travel-planner/references/practical-delivery.md)。
+
 告诉 Agent 你的旅行愿望，它先研究目的地，再补少量重要问题，比较住宿、景点、交通和预算，并生成有真实照片、来源和行前准备的 Word 手册。用户无需替 Agent 搜索酒店或设计路线。
 
 这是完整 Agent Plugin，不是独立聊天软件。需要宿主联网研究；图文 Word 需要获准执行 Python 和写文件。没有目标日期报价时可给规划建议，不声称预算已闭环或已可预订。
+
+## Agent 能力会影响报告可用性
+
+在工具与资料条件相同的情况下，**使用越聪明、推理和研究能力越强的 Agent，通常越能得到实用的旅行报告**：它更容易发现遗漏条件、核对原始资料、比较商户、识别路线与预算冲突，并根据新证据调整方案。建议用擅长复杂任务、能联网阅读原页并获准执行随包脚本的 Agent。模型能力强仍需真实证据；搜索权限、来源可达性、文件和 Python 能力不足时，应按报告中明确的限制使用。
 
 ## 选择你的使用方式
 
