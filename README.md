@@ -1,8 +1,8 @@
-# Smart Travel Planner 1.0.2 智能旅行规划师
+# Smart Travel Planner 1.0.3 智能旅行规划师
 
-本候选继续修复 Commons 受限时的备用照片/真实图文链接、具名酒店餐厅与有序路线/费用映射、抵达方向与返程缓冲检查、短途 Word 的中文预算和紧凑布局。安装结构与标准入口不变；预订就绪仍要求真实目标日期数据。查看 [实际交付字段](skills/smart-travel-planner/references/practical-delivery.md) 和 [图片策略](skills/smart-travel-planner/references/image-policy.md)。
+本版本包含 Commons 受限时的备用照片/真实图文链接、具名酒店餐厅与有序路线/费用映射、抵达方向与返程缓冲检查、短途 Word 的中文预算和紧凑布局。安装结构与标准入口不变；预订就绪仍要求真实目标日期数据。查看 [实际交付字段](skills/smart-travel-planner/references/practical-delivery.md) 和 [图片策略](skills/smart-travel-planner/references/image-policy.md)。
 
-**main 分支源码包含后续交付可靠性修复；v1.0.2 Release ZIP 仍是原始快照。** 插件元数据保持 1.0.2，尚未创建新的版本标签或 Release。获取最新修复请克隆/下载 main 完整源码，按本地 Marketplace 或 Skill 标准入口使用。已有宿主缓存不一定自动更新，需确认实际加载的源码；不能仅靠相同版本号判断已安装最新修复。修复包使用其自己的 SHA256，不能沿用旧 Release 校验和。参见 [交付字段](skills/smart-travel-planner/references/delivery-input.md) 与 [实际商户和路线字段](skills/smart-travel-planner/references/practical-delivery.md)。
+**v1.0.3 将此前 main 上的交付可靠性修复收录为完整发行包。** 推荐从下方固定版本入口安装，核验该包对应的 SHA256。旧 v1.0.2 Release 保留历史快照，不会覆盖。更新后重新检查实际加载版本和 MCP 能力。参见 [交付字段](skills/smart-travel-planner/references/delivery-input.md) 与 [实际商户和路线字段](skills/smart-travel-planner/references/practical-delivery.md)。
 
 告诉 Agent 你的旅行愿望，它先研究目的地，再补少量重要问题，比较住宿、景点、交通和预算，并生成有真实照片、来源和行前准备的 Word 手册。用户无需替 Agent 搜索酒店或设计路线。
 
@@ -20,16 +20,16 @@
 | 熟悉终端的用户 | [README-ADVANCED](README-ADVANCED.md) | 源码、Python/MCP、Provider、测试与发布 |
 | 云电脑或有执行权限的 Agent | [README-AI-INSTALL](README-AI-INSTALL.md) | 可信来源核验、授权、能力检测和 Word 交付 |
 
-正式发行入口：[GitHub 仓库](https://github.com/SayounalaQAQ/smart-travel-planner) · [v1.0.2 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.2)。请使用本仓库固定版本，不要安装同名未知项目。
+正式发行入口：[GitHub 仓库](https://github.com/SayounalaQAQ/smart-travel-planner) · [v1.0.3 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.3)。请使用本仓库固定版本，不要安装同名未知项目。
 
 ```sh
-claude plugin marketplace add SayounalaQAQ/smart-travel-planner#v1.0.2
+claude plugin marketplace add SayounalaQAQ/smart-travel-planner#v1.0.3
 claude plugin install smart-travel-planner@smart-travel-planner-marketplace --scope user
 ```
 
 ## 从可信 ZIP 持久安装
 
-核验 `Smart-Travel-Planner-1.0.2.zip.sha256` 后解压完整包，进入 `smart-travel-planner-1.0.2` 目录：
+核验 `Smart-Travel-Planner-1.0.3.zip.sha256` 后解压完整包，进入 `smart-travel-planner-1.0.3` 目录：
 
 ```sh
 claude plugin marketplace add ./
@@ -44,6 +44,28 @@ Codex 提供 repo marketplace、portable manifest 与兼容 overlay，见 [Codex
 ## 怎么用
 
 “先检查旅行工具。我想从上海去日本八天，两人，每人6000元含机票住宿，喜欢美食摄影，不早起，其他你推荐。请给有照片和来源的 Word 攻略。”
+
+### 可直接复制的完整提示词
+
+插件安装并启用后，把下面这段发送给 Agent：
+
+```text
+请使用 smart-travel-planner 插件，帮我规划三亚 3 天 2 晚的旅行。
+
+要求：
+1. 从广州出发，预算 2000 元，1 人。
+2. 不喜欢早起，每天尽量 9:30 以后出门。
+3. 优先选择性价比高的住宿和交通。
+4. 自行上网查找酒店、景点、门票、路线，不要让我自己找。
+5. 如果行程存在冲突，请自主调整并验证。
+6. 生成包含景点真实照片、路线、预算和来源的 Word 旅行手册。
+7. 同时输出 Markdown 和 JSON 规划文件。
+8. 所有生成文件保存到当前工作目录。
+
+请先检查插件和 MCP 能力，然后直接开始规划。只有真正需要我决策的问题才向我提问。
+```
+
+可以替换目的地、天数、出发地、预算和偏好。日期窗口、预算是否包含往返交通等必要信息缺失时，Agent 仍需少量确认；其余研究与冲突优化由 Agent 完成。输出目录指当前用户工作目录，不是插件安装目录。照片必须有可核验许可；无法取得合法照片时如实使用已核验图文外链或说明缺图，不用未经授权图片补数。预算不足或报价未核实会明确呈现，不因提示词要求而伪称已可预订。
 
 正式多日规划默认交付 Markdown/JSON 和 Word；单项咨询或明确只要文本例外。模糊兴趣先研究，再问作品巡礼、收藏、复古游戏等高价值偏好；答案实际回填筛选。无明确答案时给标注的探索型方案，专门兴趣/成人项目不从泛标签猜测。
 
@@ -93,7 +115,7 @@ python scripts/package_plugin.py
 python scripts/prepare_github_release.py --output-dir "<不存在的新发行目录>"
 ```
 
-完整发行包含可独立运行的回归合同；用户行程、缓存、日志及输出照片排除。仅含一张有 CC0 依据的历史测试照片，见 [第三方说明](THIRD-PARTY-NOTICES.md)。合同测试不是实时事实/宿主验收。发布和版本见 [Release Notes](RELEASE-NOTES-1.0.2.md)、[CHANGELOG](CHANGELOG.md)。
+完整发行包含可独立运行的回归合同；用户行程、缓存、日志及输出照片排除。仅含一张有 CC0 依据的历史测试照片，见 [第三方说明](THIRD-PARTY-NOTICES.md)。合同测试不是实时事实/宿主验收。发布和版本见 [Release Notes](RELEASE-NOTES-1.0.3.md)、[CHANGELOG](CHANGELOG.md)。
 
 ## 安全 更新 卸载
 

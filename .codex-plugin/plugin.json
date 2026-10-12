@@ -1,6 +1,6 @@
 {
   "name": "smart-travel-planner",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A research-first travel decision workflow with evidence-gated autonomous replanning, constraint-aware routes, budgets, and a Word handbook.",
   "author": {
     "name": "Smart Travel Planner contributors"

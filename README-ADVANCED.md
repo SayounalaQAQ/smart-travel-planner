@@ -2,13 +2,12 @@
 
 ## 获取和预检
 
-从 [正式仓库](https://github.com/SayounalaQAQ/smart-travel-planner) 获取 `main` 上的最新交付修复并记录 commit。版本元数据保持 1.0.2；[v1.0.2 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.2) 是未覆盖的历史快照，不含这些修复。不要自动搜索同名 GitHub 项目安装。
+从 [正式仓库](https://github.com/SayounalaQAQ/smart-travel-planner) 获取固定 `v1.0.3` 并记录 commit；完整发行包见 [v1.0.3 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.3)。v1.0.2 保留历史快照；不要自动搜索同名 GitHub 项目安装。
 
 ```sh
 git clone https://github.com/SayounalaQAQ/smart-travel-planner.git
 cd smart-travel-planner
-git checkout main
-git pull --ff-only
+git checkout v1.0.3
 git rev-parse HEAD
 python --version
 python -m venv .venv
@@ -69,6 +68,6 @@ python scripts/prepare_github_release.py --output-dir "<不存在的新发行目
 
 发行 ZIP 包含运行代码与明确标注的回归合同测试；测试输入不证明实时旅行事实。只包含一个有 CC0 依据的历史测试照片，见 [第三方说明](THIRD-PARTY-NOTICES.md)。用户行程、缓存、验收日志、输出照片不打包。
 
-`prepare_github_release.py` 生成可上传源码目录、发行材料摘要和仓库地址模板；传入 `--repository owner/repo` 才生成真实命令，不上传、不推送、不开仓库。源码上传顺序、Release 资产和核验清单见 [发布说明](RELEASE-NOTES-1.0.2.md)。
+`prepare_github_release.py` 生成可上传源码目录、发行材料摘要和仓库地址模板；传入 `--repository owner/repo` 才生成真实命令，不上传、不推送、不开仓库。源码上传顺序、Release 资产和核验清单见 [发布说明](RELEASE-NOTES-1.0.3.md)。
 
 卸载与更新优先用宿主官方管理；手动模式只移除已登记的此插件条目/MCP配置，保留其他配置与用户攻略，不递归删除未确认目录。

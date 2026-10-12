@@ -63,17 +63,23 @@ class Distribution(unittest.TestCase):
             self.assertIn('占位',guide)
         else:
             self.assertRegex(repository,r'^[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*$')
-            self.assertIn('claude plugin marketplace add '+repository+'\n',guide)
+            version=json.loads((ROOT/'plugin.json').read_text())['version']
+            self.assertIn('claude plugin marketplace add '+repository+'#v'+version+'\n',guide)
             self.assertNotIn('claude plugin marketplace add '+repository+'#v1.0.2',guide)
-            self.assertIn('修复前的固定快照',guide)
-            self.assertIn('版本元数据仍为 1.0.2',guide)
+            self.assertIn('历史快照',guide)
+            self.assertIn('v'+version+' Release',guide)
             self.assertIn('scripts/handbook_validation.py',guide)
             self.assertNotIn('YOUR_GITHUB_OWNER/YOUR_REPOSITORY',guide)
     def test_no_user_work_or_unapproved_image(self):
         names=[p.relative_to(ROOT).as_posix() for p in distribution_files()]
+        version=json.loads((ROOT/'plugin.json').read_text())['version']
+        self.assertIn('RELEASE-NOTES-'+version+'.md',names)
         self.assertFalse(any(n.startswith(('work/','outputs/','acceptance/')) or '__pycache__' in n or n=='.env' for n in names))
         test_images=[n for n in names if n.startswith('tests/') and n.endswith(('.jpg','.png'))]
         self.assertEqual(test_images,['tests/fixtures/images/sensoji-cc0.jpg'])
+        readme=(ROOT/'README.md').read_text(encoding='utf-8')
+        for required in ('从广州出发，预算 2000 元，1 人。','每天尽量 9:30 以后出门','同时输出 Markdown 和 JSON 规划文件','所有生成文件保存到当前工作目录','只有真正需要我决策的问题才向我提问'):
+            self.assertIn(required,readme)
     def test_zip_checksum_matches(self):
         with tempfile.TemporaryDirectory() as tmp:
             path=build(Path(tmp)/'release.zip');result=release.verify(path,str(path)+'.sha256')

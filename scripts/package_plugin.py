@@ -13,6 +13,9 @@ EXCLUDED_PARTS={'.git','__pycache__','outputs','work','acceptance','.venv'}
 
 def distribution_files():
     files=[ROOT/name for name in INCLUDE_FILES if (ROOT/name).is_file()]
+    version=json.loads((ROOT/'plugin.json').read_text(encoding='utf-8'))['version']
+    notes=ROOT/f'RELEASE-NOTES-{version}.md'
+    if notes.is_file():files.append(notes)
     for directory in INCLUDE_DIRS:
         base=ROOT/directory
         for path in base.rglob('*'):

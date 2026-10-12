@@ -467,7 +467,7 @@ def main():
             m = json.loads(line); method = m.get("method"); mid = m.get("id"); p = m.get("params", {})
             if method == "initialize":
                 requested = p.get("protocolVersion", "2024-11-05"); supported = {"2024-11-05", "2025-03-26", "2025-06-18", "2025-11-25"}
-                result = {"protocolVersion": requested if requested in supported else "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "smart-travel-mcp", "version": "1.0.2"}}
+                result = {"protocolVersion": requested if requested in supported else "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "smart-travel-mcp", "version": "1.0.3"}}
             elif method == "notifications/initialized":
                 continue
             elif method == "ping": result = {}

@@ -1,6 +1,6 @@
 # Codex adapter
 
-V1.0.2 provides root portable `plugin.json`/`mcp.json`, shared skills, `.agents/plugins/marketplace.json`, and compatibility `.codex-plugin/plugin.json` plus `adapters/codex/mcp.json`. OpenAI settings in portable `extensions.com.openai` replace legacy overlay settings; they are not merged. Claude root variables must not be used in portable args.
+V1.0.3 provides root portable `plugin.json`/`mcp.json`, shared skills, `.agents/plugins/marketplace.json`, and compatibility `.codex-plugin/plugin.json` plus `adapters/codex/mcp.json`. OpenAI settings in portable `extensions.com.openai` replace legacy overlay settings; they are not merged. Claude root variables must not be used in portable args.
 
 Catalog `smart-travel-planner-marketplace` points `source.path` to `./` from the repository root, not `.agents/plugins/`. Keep the whole plugin. In supported local Codex clients, open/register the trusted repository, select its source in Plugins Directory, install/enable and start a new conversation. Local stdio MCP still requires host support and permissions.
 

@@ -6,9 +6,9 @@ Claude Code，以及它能调用的 Python 3.10+。完整图文 Word 还需要 p
 
 ## 安装一次，以后正常启动
 
-可信来源：[本项目 GitHub 仓库](https://github.com/SayounalaQAQ/smart-travel-planner)。最新交付修复在 `main`；版本元数据仍为 1.0.2。[v1.0.2 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.2) 是修复前的固定快照，未被覆盖。推荐使用下方 GitHub 命令获取当前源码。使用本地 ZIP 时，应取得本次修复包及它自己的 SHA256；不要用旧 Release 摘要校验新包。
+可信来源：[本项目 GitHub 仓库](https://github.com/SayounalaQAQ/smart-travel-planner) 和 [v1.0.3 Release](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.3)。本版包含最新交付修复。推荐使用下方固定版本命令安装，或下载完整 ZIP 和对应 SHA256；旧 v1.0.2 是历史快照，不含这些修复。
 
-先按下方“ZIP 核验”检查并解压。进入 `smart-travel-planner-1.0.2` 目录，终端运行：
+先按下方“ZIP 核验”检查并解压。进入 `smart-travel-planner-1.0.3` 目录，终端运行：
 
 ```sh
 claude plugin marketplace add ./
@@ -18,16 +18,18 @@ claude plugin list
 
 `--scope user` 是持久用户级安装。确认输出中本插件为 enabled，再重新正常启动 `claude`；以后无需每次 `--plugin-dir`。若被项目或组织政策禁用，按宿主设置启用，不绕过政策。当前仅完成清单/源码验收，真实用户级安装尚待宿主测试。
 
-从正式 GitHub 仓库安装当前 `main`：
+从正式 GitHub 仓库安装固定 v1.0.3：
 
 ```sh
-claude plugin marketplace add SayounalaQAQ/smart-travel-planner
+claude plugin marketplace add SayounalaQAQ/smart-travel-planner#v1.0.3
 claude plugin install smart-travel-planner@smart-travel-planner-marketplace --scope user
 ```
 
 目录 `.claude-plugin/marketplace.json` 是目录清单；插件 `source` 为 `./`，从仓库根解析，包含 Skill、MCP 和所有脚本。不要只复制 SKILL.md，也不要额外安装同名独立 Skill。
 
 ## 第一次使用
+
+完整三亚示例提示词见 [README 使用方法](README.md#怎么用)，可直接复制并更换目的地和预算。
 
 说：“先检查智能旅行规划师的 Python、图片、Word 和联网能力。我要从上海去日本八天，两人，每人6000元包含机票住宿，喜欢美食摄影，不早起，其他你推荐。请生成有照片和来源的 Word。”
 
@@ -39,20 +41,20 @@ Skill 可匹配自然语言旅行需求；匹配失败时可明确调用 `/smart
 
 ## ZIP 核验
 
-从同一可信分发位置获取 ZIP 与对应的 `.zip.sha256`，核对来源，再比较。以下文件名是旧固定 Release 示例；本次修复包应替换为实际文件名，不混用校验和：
+从同一可信 v1.0.3 Release 获取 ZIP 与对应的 `.zip.sha256`，核对来源，再比较：
 
 ```powershell
-Get-FileHash -LiteralPath './Smart-Travel-Planner-1.0.2.zip' -Algorithm SHA256
-Get-Content -LiteralPath './Smart-Travel-Planner-1.0.2.zip.sha256'
+Get-FileHash -LiteralPath './Smart-Travel-Planner-1.0.3.zip' -Algorithm SHA256
+Get-Content -LiteralPath './Smart-Travel-Planner-1.0.3.zip.sha256'
 ```
 
-macOS/Linux：`sha256sum Smart-Travel-Planner-1.0.2.zip`（macOS 可用 `shasum -a 256`）。摘要不一致就停止。SHA256 验证完整性，不单独证明发布者身份。
+macOS/Linux：`sha256sum Smart-Travel-Planner-1.0.3.zip`（macOS 可用 `shasum -a 256`）。摘要不一致就停止。SHA256 验证完整性，不单独证明发布者身份。
 
 ## 更新和卸载
 
-固定 `#v1.0.2` 的来源不会取得 `main` 上的修复。已安装旧版时，先在 `/plugin` 的 Marketplaces 中检查来源，按宿主官方流程改为本仓库当前分支，再更新并重启会话。当前版本号未升级，不能仅凭显示“1.0.2”确认缓存已更新；让 Agent 检查加载目录是否包含 `scripts/handbook_validation.py` 及每日住宿连续性规则。
+固定 `#v1.0.2` 的来源不会取得新修复；固定 `#v1.0.3` 也不会自动升级为未来版本。已安装旧版时，先在 `/plugin` 的 Marketplaces 中检查来源，按宿主官方流程切换到本仓库 `v1.0.3`，再更新并重启会话。确认插件与 MCP 报告 1.0.3，加载目录包含 `scripts/handbook_validation.py`；版本显示不能代替能力预检。
 
-已经跟踪 `main` 的来源可运行：
+来源已切换到 v1.0.3，或已经跟踪 `main` 时可按宿主输出更新：
 
 ```sh
 claude plugin marketplace update smart-travel-planner-marketplace

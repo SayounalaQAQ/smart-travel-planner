@@ -1,6 +1,6 @@
 # Claude Code adapter
 
-Persistent entry: repository-root `.claude-plugin/marketplace.json`, named `smart-travel-planner-marketplace`; plugin `smart-travel-planner` has source `./`. The full root contains `.claude-plugin/plugin.json` version 1.0.2, skills, scripts and `.mcp.json`.
+Persistent entry: repository-root `.claude-plugin/marketplace.json`, named `smart-travel-planner-marketplace`; plugin `smart-travel-planner` has source `./`. The full root contains `.claude-plugin/plugin.json` version 1.0.3, skills, scripts and `.mcp.json`.
 
 From the verified extracted directory:
 

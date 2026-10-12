@@ -14,7 +14,7 @@ def stamp():
 def fetch_html(url):
     from security.network import request_bytes
     raw, _, charset, final = request_bytes(url, timeout=7, max_bytes=2_000_000,
-        headers={'User-Agent': 'SmartTravelPlanner/1.0.2 (bounded public research)'}, content_types={'text/html'})
+        headers={'User-Agent': 'SmartTravelPlanner/1.0.3 (bounded public research)'}, content_types={'text/html'})
     return raw.decode(charset, errors='replace'), final
 
 
