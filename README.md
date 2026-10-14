@@ -8,6 +8,16 @@
 
 这是完整 Agent Plugin，不是独立聊天软件。需要宿主联网研究；图文 Word 需要获准执行 Python 和写文件。没有目标日期报价时可给规划建议，不声称预算已闭环或已可预订。
 
+## 项目介绍视频
+
+用 83 秒了解为什么做这个项目：对比直接问 AI、自行上网搜攻略与插件工作流，展示自主研究、冲突调整、来源核验、安装方法和 Word / Markdown / JSON 交付。
+
+[![Smart Travel Planner 项目介绍视频封面](assets/project-introduction-cover.jpg)](https://github.com/SayounalaQAQ/smart-travel-planner/releases/download/v1.0.3/Smart-Travel-Planner-Introduction-Sync-Fixed.mp4)
+
+**[打开介绍视频（MP4 · 83.5 秒 · 1080p）](https://github.com/SayounalaQAQ/smart-travel-planner/releases/download/v1.0.3/Smart-Travel-Planner-Introduction-Sync-Fixed.mp4)** · [视频与校验文件](https://github.com/SayounalaQAQ/smart-travel-planner/releases/tag/v1.0.3)
+
+点击封面打开视频；若浏览器直接下载，请下载后播放。视频已修正配音与字幕同步，画面中的路线和手册为结构示意，具体旅行仍需核验出行日期与真实来源。
+
 ## Agent 能力会影响报告可用性
 
 在工具与资料条件相同的情况下，**使用越聪明、推理和研究能力越强的 Agent，通常越能得到实用的旅行报告**：它更容易发现遗漏条件、核对原始资料、比较商户、识别路线与预算冲突，并根据新证据调整方案。建议用擅长复杂任务、能联网阅读原页并获准执行随包脚本的 Agent。模型能力强仍需真实证据；搜索权限、来源可达性、文件和 Python 能力不足时，应按报告中明确的限制使用。
